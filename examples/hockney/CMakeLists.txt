@@ -21,7 +21,7 @@ project ( hockney ${_lang_add} )
 ##  Test program name is:  test<project name>.{cpp|cu}
 
 set ( _stem fftx )
-set ( _prefixes hockney )
+set ( _prefixes hockney gethat )
 set ( BUILD_PROGRAM test${PROJECT_NAME} )
 
 ##  ===== For most examples you should not need to modify anything below this line =====
