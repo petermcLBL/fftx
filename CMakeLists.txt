@@ -1,5 +1,5 @@
 ##
-## Copyright (c) 2018-2020, Carnegie Mellon University
+## Copyright (c) 2018-2021, Carnegie Mellon University
 ## All rights reserved.
 ##
 ## See LICENSE file for full information
@@ -11,7 +11,7 @@ cmake_minimum_required (VERSION 3.14)
 set (CMAKE_BUILD_TYPE Release  CACHE STRING "Debug, Release, RelWithDebInfo, MinSizeRel")
 
 project (FFTX_PROJECT
-         VERSION 1.0.1
+         VERSION 0.9.1
                 DESCRIPTION "FFTX Project"
                 LANGUAGES C CXX )
 
@@ -95,6 +95,32 @@ endif ()
 
 add_subdirectory ( src )
 add_subdirectory ( examples )
+
+##  We will only build the documentation if the following conditions are satisfied:
+##    FFTX_MAKE_DOCS is defined when cmake is invoked (e.g., cmake -DFFTX_MAKE_DOCS=True ..)
+##    Sphinx is installed (also breathe & sp[hinx_rtd_theme)
+##    Doxygen is installed
+
+if ( "X${FFTX_MAKE_DOCS}X" STREQUAL "XX" OR NOT FFTX_MAKE_DOCS )
+    message ( STATUS "FFTX_MAKE_DOCS is not defined, do NOT build documentation" )
+else ()
+    ##  Add the CMakeIncludes folder so the FindSphinx module is found
+    set ( CMAKE_MODULE_PATH "${SPIRAL_SOURCE_DIR}/config/CMakeIncludes" ${CMAKE_MODULE_PATH} )
+
+    find_package ( Sphinx )		##  don't make it REQUIRED; skip docs if not found
+    if ( ${Sphinx_FOUND} )
+	##  Check for Doxygen -- also required to build docs 
+	find_package ( Doxygen )	##  don't make it REQUIRED; skip docs if not found
+	if ( ${Doxygen_FOUND} )
+	    message ( STATUS "Found Sphinx & Doxygen, add subdirectory 'docs' to build documentation" )
+	    add_subdirectory (docs)
+	else ()
+	    message ( STATUS "Sphinx found, Doxygen not found -- skipping 'docs'" )
+	endif ()
+    else ()
+	message ( STATUS "Sphinx not found -- skipping 'docs', do NOT build documentation" )
+    endif ()
+endif ()
 
 enable_testing()
 
