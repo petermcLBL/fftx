@@ -360,7 +360,7 @@ set ( _prefixes mddft imddft )
 
 **3.** Check the test harness program name.
 You won't need to modify this if you've followed the recommended conventions.
-The test harness program name is expected to be **test**_project
+The test harness program name is expected to be **test**_*project*:
 ```
     set ( BUILD_PROGRAM test${PROJECT_NAME} )
 ```
