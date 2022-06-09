@@ -20,13 +20,13 @@ with a compatible version of **Xcode** and **Xcode Command Line Tools**.
 
 ### Installing Pre-requisites
 
-#### spiral-software
+* #### spiral-software
 Tools required on the target machine in order
 to build SPIRAL and FFTX include:  
 **cmake**, version 3.14 or higher  
 **python**, version 3.6 or higher  
 
-Clone **spiral-software** to a location on you computer.  For instance:
+Clone **spiral-software** to a location on your computer.  For instance:
 ```
 cd ~/work
 git clone https://www.github.com/spiral-software/spiral-software
@@ -49,15 +49,15 @@ prefix *spiral-package* removed.
 Follow the build instructions for **spiral-software** (see the **README**
 [**here**](https://github.com/spiral-software/spiral-software/blob/master/README.md) ).
 
-#### Python 3
+* #### Python 3
 
 FFTX, like SPIRAL, requires **Python 3**.
 
 On some systems both **python** (usually version 2.7) and **python3** exist.
 The scripts used to create the FFTX library source code check the version of
 **python**, and if it is version 2.X it will try to run **python3** instead.
-A user therefore, should not have to worry whether **python** or
-**python3** come first in the user's path.
+A user, therefore, should not have to worry whether **python** or
+**python3** comes first in the user's path.
 
 ### Installing FFTX
 
@@ -66,7 +66,8 @@ Clone **FFTX** to a location on your computer.  For instance:
 cd ~/work
 git clone https://www.github.com/spiral-software/fftx
 ```
-**NOTE:** Before attempting to build ensure you have set environment variable
+**NOTE:** Before attempting to build,
+ensure you have set environment variable
 **SPIRAL_HOME** to point to your **spiral-software** instance.
 
 Also set the environment variable **FFTX_HOME** to point to the directory where
@@ -93,7 +94,7 @@ Serial code is built if no argument is given or if the argument is **CPU**.
 
 To create the library source code, do the following:
 ```
-cd fftx				## your FFTX install directory
+cd $FFTX_HOME			## your FFTX install directory
 cd src/library
 ./build-lib-code.sh CUDA	## build CUDA code (as well as CPU code)
 cd ../..
@@ -111,11 +112,11 @@ Next, run **cmake** with the appropriate settings, and build the software:
 mkdir build
 cd build
 # do this if building for CPU
-cmake -DCMAKE_INSTALL_PREFIX=~/work/fftx -D_codegen=CPU ..
+cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -D_codegen=CPU ..
 # do this if building for CUDA
-cmake -DCMAKE_INSTALL_PREFIX=~/work/fftx -D_codegen=CUDA ..
+cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -D_codegen=CUDA ..
 # do this if building for HIP
-cmake -DCMAKE_INSTALL_PREFIX=~/work/fftx -DCMAKE_CXX_COMPILER=hipcc -D_codegen=HIP ..
+cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -DCMAKE_CXX_COMPILER=hipcc -D_codegen=HIP ..
 # do this in every case
 make install
 ```
@@ -129,13 +130,13 @@ may be using the Git Bash shell available with **git** (other shells such as
 Cygwin or msys will also work).  To build FFTX, open a shell and do the
 following:
 ```
-cd fftx
+cd $FFTX_HOME
 cd src/library
 ./build-lib-code.sh CUDA
 cd ../..
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=~/work/fftx -D_codegen=CUDA ..
+cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -D_codegen=CUDA ..
 cmake --build . --target install --config Release
 ```
 This shows an example building for CUDA on Windows; you can also build for CPU
@@ -207,7 +208,7 @@ functions for a particular size.
 * Run a specific size transform once.
 
 The following example shows usage of the 3D FFT complex-to-complex transform
-(others are similar, just use the appropriate names and header file(s) from the
+(others are similarl just use the appropriate names and header file(s) from the
 table above).  The user (calling application) is responsible for setting up
 memory buffers and allocations as required (i.e., host memory for serial code
 and device memory for GPU code).
@@ -329,9 +330,9 @@ with either, or both, suffixes: **.cpp**, or **.cu**.
 4. In the *project* folder, add (or copy and edit)
 a **CMakeLists.txt** file (instructions for editing below).
 
-### Setting Up The CMakeLists.txt File
+### Setting Up The cmake File
 
-The **CMakeLists.txt** file has a section in the beginning to
+The **cmake** file, **CMakeLists.txt**, has a section in the beginning to
 specify a few names;
 most of the rules and targets are defined automatically,
 and few, if any, changes should be required.
