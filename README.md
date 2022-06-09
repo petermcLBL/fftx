@@ -84,7 +84,8 @@ If you create all the source code (and related **cmake** scripts
 and library APIs) for GPU and then try building
 for CPU only, you may encounter compiler errors or unexpected results.
 
-The shell script **build-lib-code.sh** builds the library code.
+The shell script
+**src/library/build-lib-code.sh** builds the library code.
 The script takes one optional argument to specify what code to build.
 Serial code (CPU) is always built.
 GPU code is built when the argument passed is either **CUDA** or **HIP**.
@@ -94,7 +95,7 @@ To create the library source code, do the following:
 ```
 cd fftx				## your FFTX install directory
 cd src/library
-./build-lib-code.sh CUDA	## build CUDA code
+./build-lib-code.sh CUDA	## build CUDA code (as well as CPU code)
 cd ../..
 ```
 This step can take quite a long time depending on the number of transforms and
@@ -102,8 +103,8 @@ set of sizes to create.
 The code is targeted to run on the CPU, and code is created targeted to
 run on a GPU (CUDA or HIP) depending on the argument given
 to the build script.
-Depending on the number of sizes being built for each
-transform this process can take a considerable amount of time.
+Depending on the number of sizes being built for each transform,
+this process can take a considerable amount of time.
 
 Next, run **cmake** with the appropriate settings, and build the software:
 ```
@@ -122,7 +123,7 @@ make install
 #### Building on Windows
 
 FFTX can be built on Windows; however, you need to be able
-to run a [bash] shell script to build the library source code.
+to run a **bash** shell script to build the library source code.
 The easiest option to accomplish this
 may be using the Git Bash shell available with **git** (other shells such as
 Cygwin or msys will also work).  To build FFTX, open a shell and do the
@@ -145,7 +146,7 @@ or AMD HIP as shown above (under Building for Linux).
 Currently, **FFTX** builds a number of example programs;
 the programs will be installed in the location specified by
 **CMAKE_INSTALL_PREFIX**.  This often defaults to a system location,
-such as /usr/local, to which you may not have write priviliges;
+such as /usr/local, to which you may not have write privileges;
 thus it is best to specify **CMAKE_INSTALL_PREFIX** explicitly
 on the **cmake** command line (as shown above).
 A reasonable option is the root of your FFTX tree (e.g., ~/work/fftx).
@@ -245,7 +246,7 @@ in order to access the following helper functions to compile/link
 with the FFTX libraries.  Two functions are available:
 
 1.  **FFTX_find_libraries**() : this function finds the FFTX libraries, linker
-library path, and include file paths and exposes the following variables:
+library path, and include file paths, and sets the following variables:
 
 |CMake Variable Name|Description|
 |:-----|:-----|
@@ -257,8 +258,8 @@ library path, and include file paths and exposes the following variables:
 include file paths, the linker library path, and the library names to the
 specified target.
 
-An application typically need only call
-**FFTX_add_includes_libs_to_target**()
+An application will typically need only call
+**FFTX_add_includes_libs_to_target**(),
 and let FFTX handle the assignment of paths, etc. to the target.
 Only if an application specifically needs to access the named
 variables above is it necessary to call **FFTX_find_libraries**().
@@ -346,22 +347,22 @@ do *not* override it in the **cmake** file.
 **1.** Set the project name.  The preferred name is
 the same name as the example folder, e.g., **mddft**
 ```
-project ( mddft ${\_lang\_add} ${\_lang\_base} )
+project ( mddft ${_lang_add} ${_lang_base} )
 ```
 
 **2.** As noted above, the file naming convention for the
 *driver* programs is *prefix.stem*.**cpp**.
 Specify the *stem* and *prefix(es)* used; e.g., from the **mddft** example:
 ```
-set ( \_stem fftx )
-set ( \_prefixes mddft imddft )
+set ( _stem fftx )
+set ( _prefixes mddft imddft )
 ```
 
 **3.** Check the test harness program name.
 You won't need to modify this if you've followed the recommended conventions.
 The test harness program name is expected to be **test**_project
 ```
-    set ( BUILD\_PROGRAM test${PROJECT\_NAME} )
+    set ( BUILD_PROGRAM test${PROJECT_NAME} )
 ```
 
 Finally, add an entry to the **CMakeLists.txt** file in
