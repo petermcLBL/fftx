@@ -3,7 +3,6 @@
 #include "fftx3.hpp"
 #include "fftx3utilities.h"
 #include "verify_device.h"
-// #include "device_macros.h"
 
 #include "VerifyTransform.hpp"
 

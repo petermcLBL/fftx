@@ -17,6 +17,13 @@ else ()
     message ( STATUS "_codegen = ${_codegen}" )
 endif ()
 
+if ( "X${USE_FFTW3}" STREQUAL "X" )
+    set ( USE_FFTW3 0 )
+else ()
+    message ( STATUS "USE_FFTW3 = ${USE_FFTW3}" )
+endif ()
+add_compile_definitions(USE_FFTW3=${USE_FFTW3})
+
 set (CMAKE_BUILD_TYPE Release  CACHE STRING "Debug, Release, RelWithDebInfo, MinSizeRel")
 
 project (FFTX_PROJECT

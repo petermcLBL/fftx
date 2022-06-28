@@ -24,11 +24,19 @@ set ( BUILD_PROGRAM test${PROJECT_NAME} )
 set ( _prefixes_device )
 set ( BUILD_PROGRAM_DEVICE test${PROJECT_NAME}_device )
 
+if ( ${USE_FFTW3} )
+    set ( _prefixes_fftw )
+    set ( BUILD_PROGRAM_FFTW test${PROJECT_NAME}_fftw )
+endif ()
+
 ##  ===== For most examples you should not need to modify anything BELOW this line =====
 
 manage_deps_codegen ( ${_codegen} ${_stem} "${_prefixes}" )
 add_includes_libs_to_target ( ${BUILD_PROGRAM} ${_stem} "${_prefixes}" )
 add_includes_libs_to_target ( ${BUILD_PROGRAM_DEVICE} ${_stem} "${_prefixes_device}" )
+if ( ${USE_FFTW3} )
+    add_includes_libs_to_target ( ${BUILD_PROGRAM_FFTW} ${_stem} "${_prefixes_fftw}" )
+endif ()
 
 ## Now for the version with _lib suffix.
 

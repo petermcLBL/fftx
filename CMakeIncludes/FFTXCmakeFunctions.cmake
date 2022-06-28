@@ -196,6 +196,10 @@ function ( add_includes_libs_to_target _target _stem _prefixes )
 	target_link_libraries      ( ${_target} ${_library_names} )
 	##  message ( STATUS "${_target}: Libraries added = ${_library_names}" )
     endif ()
+    if ( ${USE_FFTW3} EQUAL 1 )
+        ## Add FFTW for examples/verify/testverify_fftw.
+        target_link_libraries      ( ${_target} fftw3 )
+    endif ()
 
     ##  set ( INSTALL_DIR_TARGET ${CMAKE_BINARY_DIR}/bin )
     set ( INSTALL_DIR_TARGET ${CMAKE_INSTALL_PREFIX}/bin )

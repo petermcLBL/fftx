@@ -6,6 +6,9 @@
 
 #include "fftx3.hpp"
 // #include "fftx3utilities.h"
+#if USE_FFTW3
+#include <fftw3.h>
+#endif
 
 // Define {init|destroy|run}TransformFunc and transformTuple if undefined.
 
@@ -68,6 +71,7 @@ fftx::box_t<DIM> domainFromSize(const fftx::point_t<DIM>& a_size)
 
 #if defined(__CUDACC__) || defined(FFTX_HIP)
 
+// deviceTransform3dType is independent of dimensions
 template<typename T_IN, typename T_OUT>
 struct deviceTransform3dType
 {
@@ -134,6 +138,7 @@ struct deviceTransform3dType
 };
   
 
+// deviceTransform3d has deviceTransform3dType and dimensions
 template<typename T_IN, typename T_OUT>
 struct deviceTransform3d
 {
@@ -190,6 +195,145 @@ imdprdft3dDevice(DEVICE_FFT_Z2D);
 
 #endif
 
+#if USE_FFTW3
+
+enum fftwType { FFTW_R = 0, FFTW_C = 1 };
+
+// fftwTransform3dType is independent of dimensions
+template<typename T_IN, typename T_OUT>
+struct fftwTransform3dType
+{
+  fftwTransform3dType() { };
+
+  fftwTransform3dType(fftwType a_inType,
+                      fftwType a_outType,
+                      int a_sign = FFTW_FORWARD)
+  {
+    m_inType = a_inType;
+    m_outType = a_outType;
+    m_sign = a_sign;
+  }
+
+  fftwType m_inType;
+  fftwType m_outType;
+  int m_sign;
+
+  fftx::point_t<3> size(fftx::box_t<3> a_inputDomain,
+                        fftx::box_t<3> a_outputDomain)
+  {
+    fftx::point_t<3> tfmSize = a_inputDomain.extents();
+    if ((m_inType == FFTW_C) && (m_outType == FFTW_R))
+      { // exception for complex-to-real
+        tfmSize = a_outputDomain.extents();
+      }
+    return tfmSize;
+  }
+
+  fftw_plan plan3d(fftx::point_t<3> a_tfmSize,
+                   fftx::array_t<3, std::complex<double>>& a_inArray,
+                   fftx::array_t<3, std::complex<double>>& a_outArray)
+  {
+    return fftw_plan_dft_3d(a_tfmSize[0], a_tfmSize[1], a_tfmSize[2],
+                            (fftw_complex*) a_inArray.m_data.local(),
+                            (fftw_complex*) a_outArray.m_data.local(),
+                            m_sign, FFTW_ESTIMATE);
+  }
+
+  fftw_plan plan3d(fftx::point_t<3> a_tfmSize,
+                   fftx::array_t<3, double>& a_inArray,
+                   fftx::array_t<3, std::complex<double>>& a_outArray)
+  {
+    return fftw_plan_dft_r2c_3d(a_tfmSize[0], a_tfmSize[1], a_tfmSize[2],
+                                a_inArray.m_data.local(),
+                                reinterpret_cast<fftw_complex*>(a_outArray.m_data.local()),
+                                FFTW_ESTIMATE);
+  }
+
+  fftw_plan plan3d(fftx::point_t<3> a_tfmSize,
+                   fftx::array_t<3, std::complex<double>>& a_inArray,
+                   fftx::array_t<3, double>& a_outArray)
+  {
+    return fftw_plan_dft_c2r_3d(a_tfmSize[0], a_tfmSize[1], a_tfmSize[2],
+                                (fftw_complex*) a_inArray.m_data.local(),
+                                a_outArray.m_data.local(),
+                                FFTW_ESTIMATE);
+  }
+
+  void exec(fftw_plan& a_plan)
+  {
+    fftw_execute(a_plan);
+  }
+};
+  
+
+// fftwTransform3d has fftwTransform3dType and dimensions
+template<typename T_IN, typename T_OUT>
+struct fftwTransform3d
+{
+  fftwTransform3d(fftwTransform3dType<T_IN, T_OUT>& a_dtype,
+                  fftx::box_t<3> a_inputDomain,
+                  fftx::box_t<3> a_outputDomain)
+  {
+    m_dtype = a_dtype;
+    // m_inputDomain = a_inputDomain;
+    // m_outputDomain = a_outputDomain;
+    m_inData = new T_IN[a_inputDomain.size()];
+    m_outData = new T_OUT[a_outputDomain.size()];
+    
+    m_inArray = fftx::array_t<3, T_IN>(m_inData, a_inputDomain);
+    m_outArray = fftx::array_t<3, T_OUT>(m_outData, a_outputDomain);
+    
+    m_tfmSize = m_dtype.size(a_inputDomain, a_outputDomain);
+    m_plan = m_dtype.plan3d(m_tfmSize, m_inArray, m_outArray);
+  }
+
+  ~fftwTransform3d()
+  {
+    fftw_destroy_plan(m_plan);
+    delete[] m_inData;
+    delete[] m_outData;
+  }
+  
+  fftwTransform3dType<T_IN, T_OUT> m_dtype;
+
+  // fftx::box_t<3> m_inputDomain;
+  // fftx::box_t<3> m_outputDomain;
+
+  T_IN* m_inData;
+  T_OUT* m_outData;
+
+  fftx::array_t<3, T_IN> m_inArray;
+  fftx::array_t<3, T_OUT> m_outArray;
+  
+  fftx::point_t<3> m_tfmSize;
+
+  fftw_plan m_plan;
+
+  void exec(fftx::array_t<3, T_IN>& a_inArray,
+            fftx::array_t<3, T_OUT>& a_outArray)
+  {
+    copyArray(m_inArray, a_inArray);
+    m_dtype.exec(m_plan);
+    copyArray(a_outArray, m_outArray);
+  }
+};
+  
+
+fftwTransform3dType<std::complex<double>, std::complex<double>>
+mddft3dFFTW(FFTW_C, FFTW_C, FFTW_FORWARD);
+
+fftwTransform3dType<std::complex<double>, std::complex<double>>
+imddft3dFFTW(FFTW_C, FFTW_C, FFTW_BACKWARD);
+
+fftwTransform3dType<double, std::complex<double>>
+mdprdft3dFFTW(FFTW_R, FFTW_C);
+
+fftwTransform3dType<std::complex<double>, double>
+imdprdft3dFFTW(FFTW_C, FFTW_R);
+
+#endif
+
+
 template <int DIM, typename T_IN, typename T_OUT>
 class TransformFunction
 {
@@ -202,8 +346,8 @@ public:
 
   // constructor with FFTX handle
   TransformFunction(fftx::handle_t (*a_functionPtr)
-                   (fftx::array_t<DIM, T_IN>&,
-                    fftx::array_t<DIM, T_OUT>&),
+                    (fftx::array_t<DIM, T_IN>&,
+                     fftx::array_t<DIM, T_OUT>&),
                     fftx::box_t<DIM> a_inDomain,
                     fftx::box_t<DIM> a_outDomain,
                     fftx::point_t<DIM> a_fullExtents,
@@ -235,11 +379,11 @@ public:
 #if defined(__CUDACC__) || defined(FFTX_HIP)
   // constructor with device library transformer
   TransformFunction(deviceTransform3dType<T_IN, T_OUT>& a_deviceTfm3dType,
-                    fftx::box_t<DIM> a_inDomain,
-                    fftx::box_t<DIM> a_outDomain,
-                    fftx::point_t<DIM> a_fullExtents,
-                    std::string& a_name,
-                    int a_sign)
+    fftx::box_t<DIM> a_inDomain,
+    fftx::box_t<DIM> a_outDomain,
+    fftx::point_t<DIM> a_fullExtents,
+    std::string& a_name,
+    int a_sign)
   {
     m_deviceTfm3dPtr = new deviceTransform3d<T_IN, T_OUT>(a_deviceTfm3dType,
                                                           a_inDomain,
@@ -252,6 +396,27 @@ public:
     m_tp = DEVICE_LIB;
   }
 #endif
+
+#if USE_FFTW3
+  // constructor with FFTW transformer
+  TransformFunction(fftwTransform3dType<T_IN, T_OUT>& a_fftwTfm3dType,
+                    fftx::box_t<DIM> a_inDomain,
+                    fftx::box_t<DIM> a_outDomain,
+                    fftx::point_t<DIM> a_fullExtents,
+                    std::string& a_name,
+                    int a_sign = FFTW_FORWARD)
+  {
+    m_fftwTfm3dPtr = new fftwTransform3d<T_IN, T_OUT>(a_fftwTfm3dType,
+                                                      a_inDomain,
+                                                      a_outDomain);
+    m_inDomain = a_inDomain;
+    m_outDomain = a_outDomain;
+    m_fullExtents = m_fftwTfm3dPtr->m_tfmSize;
+    m_sign = a_sign;
+    m_name = a_name;
+    m_tp = FFTW_LIB;
+  }
+#endif
   
   ~TransformFunction()
   {
@@ -260,6 +425,13 @@ public:
       {
         // FIXME: This destructor gets called 3 times.
         // delete m_deviceTfm3dPtr;
+      }
+#endif
+#if USE_FFTW3
+    if (m_tp == FFTW_LIB)
+      {
+        // FIXME: This destructor causes core dump.
+        // delete m_fftwTfm3dPtr;
       }
 #endif
   }
@@ -354,11 +526,17 @@ public:
           }
 #endif
       }
+#if USE_FFTW3
+    else if (m_tp == FFTW_LIB)
+      {
+        m_fftwTfm3dPtr->exec(a_inArray, a_outArray);
+      }
+#endif
   }
 
 protected:
 
-  enum TransformType { EMPTY = 0, FFTX_HANDLE = 1, FFTX_LIB = 2, DEVICE_LIB = 3 };
+  enum TransformType { EMPTY = 0, FFTX_HANDLE = 1, FFTX_LIB = 2, DEVICE_LIB = 3, FFTW_LIB = 4 };
 
   TransformType m_tp;
   fftx::box_t<DIM> m_inDomain;
@@ -378,6 +556,10 @@ protected:
 #if defined(__CUDACC__) || defined(FFTX_HIP)
   // case DEVICE_LIB
   deviceTransform3d<T_IN, T_OUT>* m_deviceTfm3dPtr;
+#endif
+
+#if USE_FFTW3
+  fftwTransform3d<T_IN, T_OUT>* m_fftwTfm3dPtr;
 #endif
 };
 
