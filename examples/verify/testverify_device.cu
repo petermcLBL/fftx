@@ -2,8 +2,6 @@
 #include <random>
 #include "fftx3.hpp"
 #include "fftx3utilities.h"
-#include "verify_device.h"
-// #include "device_macros.h"
 
 #include "VerifyTransform.hpp"
 
@@ -62,24 +60,51 @@ void verify3d(fftx::box_t<3> a_domain,
     // verifyTransform(a_iprdft, a_fdomain, a_domain, fullextents, 1, a_rounds, a_verbosity);
   }
 }
-                    
 
 int main(int argc, char* argv[])
 {
   // { SHOW_CATEGORIES = 1, SHOW_SUBTESTS = 2, SHOW_ROUNDS = 3};
-  printf("Usage:  %s [verbosity=0] [rounds=20]\n", argv[0]);
+  printf("Usage:  %s [nx] [ny] [nz] [verbosity=0] [rounds=20]\n", argv[0]);
   printf("verbosity 0 for summary, 1 for categories, 2 for subtests, 3 for rounds\n");
+  if (argc <= 3)
+    {
+      printf("Missing dimensions\n");
+      exit(0);
+    }
+  const int nx = atoi(argv[1]);
+  const int ny = atoi(argv[2]);
+  const int nz = atoi(argv[3]);
+  fftx::point_t<3> sz({{nx, ny, nz}});
+
   int verbosity = 0;
   int rounds = 20;
-  if (argc > 1)
+  if (argc > 4)
     {
-      verbosity = atoi(argv[1]);
-      if (argc > 2)
+      verbosity = atoi(argv[4]);
+      if (argc > 5)
         {
-          rounds = atoi(argv[2]);
+          rounds = atoi(argv[5]);
         }
     }
-  printf("Running with verbosity %d, random %d rounds\n", verbosity, rounds);
+  std::cout << "Running " << sz
+            << " with verbosity " << verbosity
+            << " and " << rounds << " random rounds"
+            << std::endl;
+
+#if FFTX_COMPLEX_TRUNC_LAST
+  const int fx = nx;
+  const int fy = ny;
+  const int fz = nz/2 + 1;
+#else
+  const int fx = nx/2 + 1;
+  const int fy = ny;
+  const int fz = nz;
+#endif
+  
+  fftx::box_t<3> domain3(fftx::point_t<3>({{1, 1, 1}}),
+                         fftx::point_t<3>({{nx, ny, nz}}));
+  fftx::box_t<3> fdomain3(fftx::point_t<3>({{1, 1, 1}}),
+                          fftx::point_t<3>({{fx, fy, fz}}));
 
   /*
     Set up random number generator.
@@ -88,11 +113,10 @@ int main(int argc, char* argv[])
   generator = std::mt19937(rd());
   unifRealDist = std::uniform_real_distribution<double>(-0.5, 0.5);
 
-  verify3d(verify::domain3, verify::fdomain3, rounds,
+  verify3d(domain3, fdomain3, rounds,
            mddft3dDevice, imddft3dDevice,
            mdprdft3dDevice, imdprdft3dDevice,
            verbosity);
-  
   printf("%s: All done, exiting\n", argv[0]);
   return 0;
 }
