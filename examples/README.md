@@ -258,12 +258,11 @@ Runs tests of **FFTX** library transforms
 on the fixed size `[fftx_nx, fftx_ny, fftx_nz]` where
 `fftx_nx`, `fftx_ny`, and `fftx_nz` are defined in the file `verify.h`.
 ```
-./testverify_device [verbosity] [iterations]
+./testverify_device [nx] [ny] [nz] [verbosity] [iterations]
 ```
 Runs tests of either cuFFT transforms (on CUDA)
 or rocFFT transforms (on HIP)
-on the fixed size `[fftx_nx, fftx_ny, fftx_nz]` where
-`fftx_nx`, `fftx_ny`, and `fftx_nz` are defined in the file `verify.h`.
+on the fixed size `[nx, ny, nz]`.
 ```
 ./testverify_lib [verbosity] [iterations]
 ```
