@@ -29,6 +29,14 @@ if ( ${USE_FFTW3} )
     set ( BUILD_PROGRAM_FFTW test${PROJECT_NAME}_fftw )
 endif ()
 
+if ( ${USE_MKL} )
+    # find_package(MKL CONFIG REQUIRED)
+    message(STATUS "${MKL_IMPORTED_TARGETS}") #Provides available list of targets based on input
+    set ( _prefixes_mkl )
+    set ( BUILD_PROGRAM_MKL test${PROJECT_NAME}_mkl )
+    # list ( APPEND ADDL_COMPILE_FLAGS -mkl="sequential" )
+endif ()
+
 ##  ===== For most examples you should not need to modify anything BELOW this line =====
 
 manage_deps_codegen ( ${_codegen} ${_stem} "${_prefixes}" )
@@ -36,6 +44,9 @@ add_includes_libs_to_target ( ${BUILD_PROGRAM} ${_stem} "${_prefixes}" )
 add_includes_libs_to_target ( ${BUILD_PROGRAM_DEVICE} ${_stem} "${_prefixes_device}" )
 if ( ${USE_FFTW3} )
     add_includes_libs_to_target ( ${BUILD_PROGRAM_FFTW} ${_stem} "${_prefixes_fftw}" )
+endif ()
+if ( ${USE_MKL} )
+    add_includes_libs_to_target ( ${BUILD_PROGRAM_MKL} ${_stem} "${_prefixes_mkl}" )
 endif ()
 
 ## Now for the version with _lib suffix.

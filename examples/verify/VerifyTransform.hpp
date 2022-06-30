@@ -10,6 +10,11 @@
 #include <fftw3.h>
 #endif
 
+#if USE_MKL
+#include "mkl_service.h"
+#include "mkl_dfti.h"
+#endif
+
 // Define {init|destroy|run}TransformFunc and transformTuple if undefined.
 
 #ifndef INITTRANSFORMFUNC
@@ -333,6 +338,208 @@ imdprdft3dFFTW(FFTW_C, FFTW_R);
 
 #endif
 
+#if USE_MKL
+
+enum mklSign { MKL_FORWARD = 1, MKL_BACKWARD = -1 };
+
+// mklTransform3dType is independent of dimensions
+template<typename T_IN, typename T_OUT>
+struct mklTransform3dType
+{
+  mklTransform3dType() { };
+
+  mklTransform3dType(DFTI_CONFIG_VALUE a_inType,
+                     DFTI_CONFIG_VALUE a_outType,
+                     mklSign a_sign = MKL_FORWARD)
+  {
+    m_inType = a_inType;
+    m_outType = a_outType;
+    m_sign = a_sign;
+    if ((m_inType == DFTI_COMPLEX) && (m_outType == DFTI_COMPLEX))
+      { // C2C
+        m_forwardType = DFTI_COMPLEX;
+      }
+    else
+      { // either R2C or C2R
+        m_forwardType = DFTI_REAL;
+      }
+  }
+
+  DFTI_CONFIG_VALUE m_inType;
+  DFTI_CONFIG_VALUE m_outType;
+  mklSign m_sign;
+
+  // In MKL lingo, this is DFTI_COMPLEX for C2C, DFTI_REAL for C2R or R2C.
+  DFTI_CONFIG_VALUE m_forwardType;
+
+  fftx::point_t<3> size(fftx::box_t<3> a_inputDomain,
+                        fftx::box_t<3> a_outputDomain)
+  {
+    fftx::point_t<3> tfmSize = a_inputDomain.extents();
+    if ((m_inType == DFTI_COMPLEX) && (m_outType == DFTI_REAL))
+      { // exception for complex-to-real
+        tfmSize = a_outputDomain.extents();
+      }
+    return tfmSize;
+  }
+
+  void exec(DFTI_DESCRIPTOR_HANDLE& a_mklHandle,
+            fftx::array_t<3, T_IN>& a_inArray,
+            fftx::array_t<3, T_OUT>& a_outArray)
+  {
+    T_IN* inputHostPtr = a_inArray.m_data.local();
+    T_OUT* outputHostPtr = a_outArray.m_data.local();
+
+    if (m_sign == MKL_FORWARD)
+      {
+        DftiComputeForward(a_mklHandle, inputHostPtr, outputHostPtr);
+      }
+    else if (m_sign == MKL_BACKWARD)
+      {
+        DftiComputeBackward(a_mklHandle, inputHostPtr, outputHostPtr);
+      }
+  }
+  
+};
+  
+
+// mklTransform3d has mklTransform3dType and dimensions
+template<typename T_IN, typename T_OUT>
+struct mklTransform3d
+{
+  mklTransform3d(mklTransform3dType<T_IN, T_OUT>& a_dtype,
+                  fftx::box_t<3> a_inputDomain,
+                  fftx::box_t<3> a_outputDomain)
+  {
+    m_dtype = a_dtype;
+    // m_inputDomain = a_inputDomain;
+    // m_outputDomain = a_outputDomain;
+
+    size_t inputSize = a_inputDomain.size();
+    size_t outputSize = a_outputDomain.size();
+
+    m_inData = (T_IN*) mkl_malloc(inputSize * sizeof(T_IN), 64);
+    m_outData = (T_OUT*) mkl_malloc(outputSize * sizeof(T_OUT), 64);
+    
+    m_inArray = fftx::array_t<3, T_IN>(m_inData, a_inputDomain);
+    m_outArray = fftx::array_t<3, T_OUT>(m_outData, a_outputDomain);
+    
+    m_tfmSize = m_dtype.size(a_inputDomain, a_outputDomain);
+
+    m_mklHandle = NULL;
+    MKL_LONG N[3] = {m_tfmSize[0], m_tfmSize[1], m_tfmSize[2]};
+    MKL_LONG status = DftiCreateDescriptor(&m_mklHandle, // handle returned
+                                           DFTI_DOUBLE, // precision
+                                           m_dtype.m_forwardType, // forward domain
+                                           3, // dimensionality
+                                           N); // lengths
+    if (status != DFTI_NO_ERROR)
+      {
+        printf("failed DftiCreateDescriptor, status %d\n", status);
+      }
+
+    // Default setting of DFTI_PLACEMENT is DFTI_INPLACE.
+    status = DftiSetValue(m_mklHandle, DFTI_PLACEMENT, DFTI_NOT_INPLACE);
+    if (status != DFTI_NO_ERROR)
+      {
+        printf("failed DftiSetValue on DFTI_PLACEMENT, status %d\n", status);
+      }
+
+    if (m_dtype.m_forwardType == DFTI_REAL)
+      {
+        // "Use the DFTI_CONJUGATE_EVEN_STORAGE=DFTI_COMPLEX_COMPLEX
+        // configuration setting, which will become the default in future."
+        status = DftiSetValue(m_mklHandle,
+                              DFTI_CONJUGATE_EVEN_STORAGE,
+                              DFTI_COMPLEX_COMPLEX);
+        if (status != DFTI_NO_ERROR)
+          {
+            printf("failed DftiSetValue on DFTI_COMPLEX_STORAGE, status %d\n", status);
+          }
+      }
+
+    /* Strides describe data layout in real and conjugate-even domain */
+#if FFTX_ROW_MAJOR_ORDER
+    MKL_LONG regular_stride[4] = {0, N[1]*N[2], N[2], 1};
+#if FFTX_COMPLEX_TRUNC_LAST
+    MKL_LONG complex_stride[4] = {0, N[1]*(N[2]/2+1), (N[2]/2+1), 1};
+#else
+    MKL_LONG complex_stride[4] = {0, N[1]*N[2], N[2], 1};
+#endif
+#else
+    MKL_LONG regular_stride[4] = {0, 1, N[0], N[1]*N[0]};
+#if FFTX_COMPLEX_TRUNC_LAST
+    MKL_LONG complex_stride[4] = {0, 1, N[0], N[0]*N[1]};
+#else
+    MKL_LONG complex_stride[4] = {0, 1, (N[0]/2+1), (N[0]/2+1)*N[1]};
+#endif
+#endif
+    
+    auto input_stride = ((m_dtype.m_inType == DFTI_COMPLEX) &&
+                         (m_dtype.m_outType == DFTI_REAL)) ?
+      complex_stride : regular_stride;
+    auto output_stride = ((m_dtype.m_inType == DFTI_REAL) &&
+                         (m_dtype.m_outType == DFTI_COMPLEX)) ?
+      complex_stride : regular_stride;
+    status = DftiSetValue(m_mklHandle, DFTI_INPUT_STRIDES, input_stride);
+    status = DftiSetValue(m_mklHandle, DFTI_OUTPUT_STRIDES, output_stride);
+
+    status = DftiCommitDescriptor(m_mklHandle);
+    if (status != DFTI_NO_ERROR)
+      {
+        printf("failed DftiCommitDescriptor, status %d\n", status);
+      }
+  }
+
+  ~mklTransform3d()
+  {
+    DftiFreeDescriptor(&m_mklHandle);
+    // delete[] m_inData;
+    // delete[] m_outData;
+    mkl_free(m_inData);
+    mkl_free(m_outData);
+  }
+  
+  mklTransform3dType<T_IN, T_OUT> m_dtype;
+
+  // fftx::box_t<3> m_inputDomain;
+  // fftx::box_t<3> m_outputDomain;
+
+  T_IN* m_inData;
+  T_OUT* m_outData;
+
+  fftx::array_t<3, T_IN> m_inArray;
+  fftx::array_t<3, T_OUT> m_outArray;
+  
+  fftx::point_t<3> m_tfmSize;
+
+  DFTI_DESCRIPTOR_HANDLE m_mklHandle;
+
+  void exec(fftx::array_t<3, T_IN>& a_inArray,
+            fftx::array_t<3, T_OUT>& a_outArray)
+  {
+    // FIXME: Get segfault on PRDFT test2 if I call m_dtype.exec on array args.
+    copyArray(m_inArray, a_inArray);
+    m_dtype.exec(m_mklHandle, m_inArray, m_outArray);
+    copyArray(a_outArray, m_outArray);
+  }
+};
+  
+
+mklTransform3dType<std::complex<double>, std::complex<double>>
+mddft3dMKL(DFTI_COMPLEX, DFTI_COMPLEX, MKL_FORWARD);
+
+mklTransform3dType<std::complex<double>, std::complex<double>>
+imddft3dMKL(DFTI_COMPLEX, DFTI_COMPLEX, MKL_BACKWARD);
+
+mklTransform3dType<double, std::complex<double>>
+mdprdft3dMKL(DFTI_REAL, DFTI_COMPLEX, MKL_FORWARD);
+
+mklTransform3dType<std::complex<double>, double>
+imdprdft3dMKL(DFTI_COMPLEX, DFTI_REAL, MKL_BACKWARD);
+
+#endif
+
 
 template <int DIM, typename T_IN, typename T_OUT>
 class TransformFunction
@@ -418,6 +625,27 @@ public:
   }
 #endif
   
+#if USE_MKL
+  // constructor with MKL transformer
+  TransformFunction(mklTransform3dType<T_IN, T_OUT>& a_mklTfm3dType,
+                    fftx::box_t<DIM> a_inDomain,
+                    fftx::box_t<DIM> a_outDomain,
+                    fftx::point_t<DIM> a_fullExtents,
+                    std::string& a_name,
+                    mklSign a_sign = MKL_FORWARD)
+  {
+    m_mklTfm3dPtr = new mklTransform3d<T_IN, T_OUT>(a_mklTfm3dType,
+                                                    a_inDomain,
+                                                    a_outDomain);
+    m_inDomain = a_inDomain;
+    m_outDomain = a_outDomain;
+    m_fullExtents = m_mklTfm3dPtr->m_tfmSize;
+    m_sign = (a_sign == MKL_FORWARD) ? -1 : 1;
+    m_name = a_name;
+    m_tp = MKL_LIB;
+  }
+#endif
+  
   ~TransformFunction()
   {
 #if defined(__CUDACC__) || defined(FFTX_HIP)
@@ -432,6 +660,13 @@ public:
       {
         // FIXME: This destructor causes core dump.
         // delete m_fftwTfm3dPtr;
+      }
+#endif
+#if USE_MKL
+    if (m_tp == MKL_LIB)
+      {
+        // FIXME: Haven't tested this.
+        // delete m_mklTfm3dPtr;
       }
 #endif
   }
@@ -532,11 +767,17 @@ public:
         m_fftwTfm3dPtr->exec(a_inArray, a_outArray);
       }
 #endif
+#if USE_MKL
+    else if (m_tp == MKL_LIB)
+      {
+        m_mklTfm3dPtr->exec(a_inArray, a_outArray);
+      }
+#endif
   }
 
 protected:
 
-  enum TransformType { EMPTY = 0, FFTX_HANDLE = 1, FFTX_LIB = 2, DEVICE_LIB = 3, FFTW_LIB = 4 };
+  enum TransformType { EMPTY = 0, FFTX_HANDLE = 1, FFTX_LIB = 2, DEVICE_LIB = 3, FFTW_LIB = 4, MKL_LIB = 5 };
 
   TransformType m_tp;
   fftx::box_t<DIM> m_inDomain;
@@ -560,6 +801,10 @@ protected:
 
 #if USE_FFTW3
   fftwTransform3d<T_IN, T_OUT>* m_fftwTfm3dPtr;
+#endif
+
+#if USE_MKL
+  mklTransform3d<T_IN, T_OUT>* m_mklTfm3dPtr;
 #endif
 };
 
@@ -1042,6 +1287,13 @@ protected:
             printf("%dD random impulse test round %d max error %11.5e\n",
                    DIM, itn, err);
           }
+        // FIXME CHECK DIFFERENCE HERE.
+        /*
+        std::cout << "for " << rpoint << " correct outImpulse:" << std::endl;
+        writeArray(outImpulse);
+        std::cout << "for " << rpoint << " calculated outCheck:" << std::endl;
+        writeArray(outCheck);
+        */
       }
 
     if (m_verbosity >= SHOW_SUBTESTS)

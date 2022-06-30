@@ -200,6 +200,11 @@ function ( add_includes_libs_to_target _target _stem _prefixes )
         ## Add FFTW for examples/verify/testverify_fftw.
         target_link_libraries      ( ${_target} fftw3 )
     endif ()
+    if ( ${USE_MKL} EQUAL 1 )
+        ## Add MKL for examples/verify/testverify_mkl.
+#        target_link_libraries      ( ${_target} mkl_def mkl_core mkl_cdft_core mkl_blas95_lp64 mkl_gnu_thread )
+        target_link_libraries      ( ${_target} mkl_core mkl_cdft_core mkl_sequential mkl_rt )
+    endif ()
 
     ##  set ( INSTALL_DIR_TARGET ${CMAKE_BINARY_DIR}/bin )
     set ( INSTALL_DIR_TARGET ${CMAKE_INSTALL_PREFIX}/bin )

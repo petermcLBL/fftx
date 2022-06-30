@@ -24,6 +24,13 @@ else ()
 endif ()
 add_compile_definitions(USE_FFTW3=${USE_FFTW3})
 
+if ( "X${USE_MKL}" STREQUAL "X" )
+    set ( USE_MKL 0 )
+else ()
+    message ( STATUS "USE_MKL = ${USE_MKL}" )
+endif ()
+add_compile_definitions(USE_MKL=${USE_MKL})
+
 set (CMAKE_BUILD_TYPE Release  CACHE STRING "Debug, Release, RelWithDebInfo, MinSizeRel")
 
 project (FFTX_PROJECT
