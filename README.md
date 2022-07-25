@@ -172,7 +172,9 @@ ones for different backends), and switch to it:
 mkdir build
 cd build
 ```
-Then run **cmake** as follows.
+Then, after having set the environment variable **FFTX_HOME** to the
+directory where you want **FFTX** to be installed,
+run **cmake** as follows.
 * If building for CPU only:
 ```
 cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -D_codegen=CPU ..
@@ -208,10 +210,15 @@ such as `/usr/local`, to which you may not have write privileges;
 thus it is best to specify **CMAKE_INSTALL_PREFIX** explicitly
 on the **cmake** command line, as shown above.
 
-When this step is done,  
-* the folder **$FFTX_HOME/lib** will contain the libraries
-that can be called by external applications;
-* the folder **$FFTX_HOME/bin** will contain executables for the examples.
+The *make install* step creates and
+populates a tree structure within **$FFTX_HOME**:
+
+|Directory Name|Description|
+|:-----|:-----|
+|**./CMakeIncludes**|CMake include files and functions to ease integration with FFTX|
+|**./bin**|Executables for example programs built as part of the FFTX distribution|
+|**./lib**|FFTX libraries, that can be called by external applications|
+|**./include**|Include files for using FFTX libraries|
 
 ## Running FFTX example programs
 
@@ -238,7 +245,7 @@ and libraries, an external application's **cmake** should include
 **CMakeInclude/FFTXCmakeFunctions.cmake**.
 A full example of an external
 application linking with FFTX libraries is available in the
-[**fftx-demo-extern-app**](https://www.github.com/spiral-software/fftx-demo-extern-app) repo.
+[**fftx-demo-extern-app**](https://www.github.com/petermcLBL/fftx-demo-extern-app) repo.
 
 ### FFTX libraries built
 
@@ -345,12 +352,3 @@ If you're interested in how to link an external application with FFTX please
 download this example and review the `CMakeLists.txt` therein for specific
 details.
 
-When FFTX is built, the final step (of *make install*) creates and
-populates a tree structure within **$FFTX_HOME**:
-
-|Directory Name|Description|
-|:-----|:-----|
-|**./CMakeIncludes**|CMake include files and functions to ease integration with FFTX|
-|**./bin**|Example programs built as part of the FFTX distribution|
-|**./lib**|FFTX libraries|
-|**./include**|Include files for using FFTX libraries|
