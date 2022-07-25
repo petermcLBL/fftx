@@ -347,7 +347,7 @@ variables above is it necessary to call **FFTX_find_libraries**().
 
 A complete example of an external application that builds test programs
 utilizing the FFTX libraries is available at 
-[**fftx-demo-extern-app**](https://www.github.com/spiral-software/fftx-demo-extern-app).
+[**fftx-demo-extern-app**](https://www.github.com/petermcLBL/fftx-demo-extern-app).
 If you're interested in how to link an external application with FFTX please
 download this example and review the `CMakeLists.txt` therein for specific
 details.
