@@ -61,6 +61,8 @@ installation to ensure you're up-to-date, especially for the **SPIRAL** packages
 * It is preferable to download the **SPIRAL** packages *before* performing
 the **SPIRAL** build steps.
 
+Follow the build instructions for **spiral-software** (see the **README**
+[**here**](https://github.com/spiral-software/spiral-software/blob/master/README.md) ).
 
 ### 2. Clone the FFTX repository.
 
@@ -154,6 +156,8 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX=~/work/fftx -D_codegen=CUDA ..
 cmake --build . --target install --config Release
 ```
+This shows an example building for CUDA on Windows; you can also build for CPU
+or AMD HIP as shown above (under Building for Linux).
 
 When **FFTX** is built, the final step (of *make install*) creates a tree structure
 (at the location specified by **CMAKE_INSTALL_PREFIX**).  The following
@@ -191,7 +195,7 @@ include **CMakeInclude/FFTXCmakeFunctions.cmake**.  A full example of an
 external application linking with **FFTX** libraries is available in the
 [**fftx-demo-extern-app**](https://www.github.com/spiral-software/fftx-demo-extern-app).
 
-### FFTX libraries built
+### FFTX Libraries Built
 
 **FFTX** builds libraries for 1D and 3D FFTs for a single device.  FFTs are
 built for a set of specific sizes, thus not all possible sizes will be found in
@@ -264,11 +268,8 @@ for clarity and brevity:
         ( * tupl->destroyfp )();
     }
 ```
-The available library modes
-are `LIB_MODE_CPU`, `LIB_MODE_CUDA`, and `LIB_MODE_HIP`
-for CPU, CUDA on GPU, and HIP on GPU, respectively.
 
-### Linking against FFTX libraries
+### Linking Against FFTX Libraries
 
 **FFTX** provides a **cmake** include file, **FFTXCmakeFunctions.cmake**, that
 provides functions to facilitate compiling and linking external applications
@@ -279,11 +280,13 @@ functions are available:
 
 1.  **FFTX_find_libraries**() -- This function finds the **FFTX** libraries, linker
 library path, and include file paths and exposes the following variables:
+
 |CMake Variable Name|Description|
 |:-----|:-----|
 |**FFTX_LIB_INCLUDE_PATHS**|Include paths for **FFTX** include & library headers|
 |**FFTX_LIB_NAMES**|List of **FFTX** libraries|
 |**FFTX_LIB_LIBRARY_PATH**|Path to libraries (for linker)|
+
 2.  **FFTX_add_includes_libs_to_target** ( target ) -- This function adds the
 include file paths, the linker library path, and the library names to the
 specified target.
@@ -294,7 +297,7 @@ of paths, etc. to the target.  Only if an application specifically needs to
 access the named variables above is it necessary to call
 **FFTX_find_libraries**().
 
-### External application linking with FFTX
+### External Application Linking With FFTX
 
 A complete example of an external application that builds test programs
 utilizing the **FFTX** libraries is available at 
