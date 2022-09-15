@@ -83,14 +83,25 @@ The test harness program name is expected to be **test**_*project*:
 
 Finally, add an entry to the **CMakeLists.txt** file in
 the **examples** folder.
-We use a **cmake** function, **manage_add_subdir,** to control this.
-Call the function with parameters:
+We use a **cmake** function, **manage_add_subdir,** to control this.  If the
+example you add depends on libraries built in **FFTX**, then the call to
+**manage_add_subdir** should be conditional based on a CMake dependent option
+derived from the options (see the file **options.cmake** in the **FFTX** root
+directory) indicating if the required libraries were built.  As a rule, one
+should not attempt to build an example whose dependent libraries have not been
+built.  The **manage_add_subdir** function should be called with parameters:
 example directory name and TRUE/FALSE flags for building for CPU and GPU, as in:
 ```
-##                  subdir name   CPU       GPU
+if ( BLD_COMPARE_EX )
+    manage_add_subdir ( compare       FALSE     TRUE )
+endif ()
+
+manage_add_subdir ( mddft         TRUE      TRUE )
 manage_add_subdir ( hockney       TRUE      FALSE )
-manage_add_subdir ( mddft         TRUE      TRUE  )
 ```
+**BLD_COMPARE_EX** is a CMake dependent option derived from the build status for
+the **mddft** and **mdprdft** libraries; the compare examples depend on thoise
+libraries and we don't build it unless those libraries are also built.
 
 ## Running FFTX example programs
 

@@ -5,7 +5,6 @@
 
 #include "VerifyTransform.hpp"
 
-#ifdef FFTX_HIP
 void verify3d(fftx::box_t<3> a_domain,
               fftx::box_t<3> a_fdomain,
               int a_rounds,
@@ -61,11 +60,9 @@ void verify3d(fftx::box_t<3> a_domain,
     // verifyTransform(a_iprdft, a_fdomain, a_domain, fullextents, 1, a_rounds, a_verbosity);
   }
 }
-#endif                    
 
 int main(int argc, char* argv[])
 {
-#ifdef FFTX_HIP
   // { SHOW_CATEGORIES = 1, SHOW_SUBTESTS = 2, SHOW_ROUNDS = 3};
   printf("Usage:  %s [nx] [ny] [nz] [verbosity=0] [rounds=20]\n", argv[0]);
   printf("verbosity 0 for summary, 1 for categories, 2 for subtests, 3 for rounds\n");
@@ -120,7 +117,7 @@ int main(int argc, char* argv[])
            mddft3dDevice, imddft3dDevice,
            mdprdft3dDevice, imdprdft3dDevice,
            verbosity);
-#endif  
+  
   printf("%s: All done, exiting\n", argv[0]);
   return 0;
 }
