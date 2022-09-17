@@ -114,7 +114,7 @@ function ( create_generator_file _codefor prefix stem )
 	add_custom_command ( OUTPUT ${_gen}
 	    COMMAND ${Python3_EXECUTABLE} ${SPIRAL_SOURCE_DIR}/gap/bin/catfiles.py
 	            ${_gen} ${_preamble} ${_plan} ${_postfix}
-	    COMMAND rm -f ${prefix}.${stem}.source.${_suffix}
+	    COMMAND IF EXIST ${prefix}.${stem}.source.${_suffix} ( DEL /F ${prefix}.${stem}.source.${_suffix} )
             DEPENDS ${_plan}
 	    VERBATIM
 	    COMMENT "Generating ${_gen}" )
@@ -202,12 +202,12 @@ function ( add_includes_libs_to_target _target _stem _prefixes )
     endif ()
     if ( ${USE_FFTW3} EQUAL 1 )
         ## Add FFTW for examples/verify/testverify_fftw.
-        target_link_libraries      ( ${_target} fftw3 )
+	target_link_directories    ( ${_target} PRIVATE $ENV{FFTW_ROOT}/lib )
+	target_link_libraries      ( ${_target} PRIVATE ${LIBS_FOR_FFTW3} )
     endif ()
     if ( ${USE_MKL} EQUAL 1 )
         ## Add MKL for examples/verify/testverify_mkl.
-#        target_link_libraries      ( ${_target} mkl_def mkl_core mkl_cdft_core mkl_blas95_lp64 mkl_gnu_thread )
-        target_link_libraries      ( ${_target} mkl_core mkl_cdft_core mkl_sequential mkl_rt )
+	target_link_libraries      ( ${_target} PRIVATE ${LIBS_FOR_MKL} )
     endif ()
 
     set ( INSTALL_DIR_TARGET ${CMAKE_INSTALL_PREFIX}/bin )
