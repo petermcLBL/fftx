@@ -200,11 +200,19 @@ function ( add_includes_libs_to_target _target _stem _prefixes )
 	target_link_libraries      ( ${_target} PRIVATE ${_library_names} )
 	##  message ( STATUS "${_target}: Libraries added = ${_library_names}" )
     endif ()
+
     if ( ${USE_FFTW3} EQUAL 1 )
         ## Add FFTW for examples/verify/testverify_fftw.
-	target_link_directories    ( ${_target} PRIVATE $ENV{FFTW_ROOT}/lib )
+        if ( DEFINED ENV{FFTW_DIR} )
+           message ( STATUS "FFTW_DIR is defined: library dir $ENV{FFTW_DIR}" )
+           target_link_directories    ( ${_target} PRIVATE $ENV{FFTW_DIR} )
+        elseif ( DEFINED ENV{FFTW_ROOT} )
+           message ( STATUS "FFTW_ROOT is defined: library dir $ENV{FFTW_ROOT}/lib" )
+           target_link_directories    ( ${_target} PRIVATE $ENV{FFTW_ROOT}/lib )
+        endif ()
 	target_link_libraries      ( ${_target} PRIVATE ${LIBS_FOR_FFTW3} )
     endif ()
+
     if ( ${USE_MKL} EQUAL 1 )
         ## Add MKL for examples/verify/testverify_mkl.
 	target_link_libraries      ( ${_target} PRIVATE ${LIBS_FOR_MKL} )

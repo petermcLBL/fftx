@@ -105,21 +105,23 @@ if ( ${_codegen} STREQUAL "CUDA" )
 endif ()
 
 ## Include FFTW3 if requested.
-if ( ${USE_FFTW3} )
+if ( ${USE_FFTW3} EQUAL 1)
     ##  Set up what we need to build for FFTW3
     ### Known bug: find_package for FFTW3 is broken.
     ### find_package ( FFTW3 REQUIRED )
     ##  Adjust include and library directories
-    ##  Need to add $FFTW_ROOT for includes and libraries
-    if ( DEFINED ENV{FFTW_ROOT} )
-	message ( STATUS "FFTW_ROOT is defined: $ENV{FFTW_ROOT}" )
+    if ( DEFINED ENV{FFTW_INC} )
+	message ( STATUS "FFTW_INC is defined: including $ENV{FFTW_INC}" )
+	include_directories ( $ENV{FFTW_INC} )
+    elseif ( DEFINED ENV{FFTW_ROOT} )
+	message ( STATUS "FFTW_ROOT is defined: including $ENV{FFTW_ROOT}/include" )
 	include_directories ( $ENV{FFTW_ROOT}/include )
-        set ( LIBS_FOR_FFTW3 fftw3 )
     endif ()
+    set ( LIBS_FOR_FFTW3 fftw3 )
 endif ()
 
 ## Include MKL if requested.
-if ( ${USE_MKL} )
+if ( ${USE_MKL} EQUAL 1)
    # set ( LIBS_FOR_MKL mkl_def mkl_core mkl_cdft_core mkl_blas95_lp64 mkl_gnu_thread )
    set ( LIBS_FOR_MKL mkl_core mkl_cdft_core mkl_sequential mkl_rt )
 endif ()
