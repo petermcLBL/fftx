@@ -485,7 +485,10 @@ with open ( _sizesfil, 'r' ) as fil:
         _nsize = _dims[1]
 
         _dims = re.split ( '=', segs[2] )
-        _stridetype = _dims[1]
+        if len(_dims) <= 1:
+            _stridetype = '1'
+        else:
+            _stridetype = _dims[1]
 
         ##  Assume gap file is named {_orig_file_stem}-frame.g
         ##  Generate the SPIRAL script: cat testscript_$pid.g & {transform}-frame.g
