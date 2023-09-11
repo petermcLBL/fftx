@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <cmath> // Without this, abs is the wrong function!
+#include <cmath> // Without this, abs returns zero!
 #include <random>
 
 #include "rconv_dims.h"
