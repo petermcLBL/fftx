@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build_gcc:
-    name: Check sprial-package-fftx on Linux
+    name: Check spiral-package-fftx on Linux
     runs-on: ubuntu-latest
     steps:
     - name: Checkout spiral-software
