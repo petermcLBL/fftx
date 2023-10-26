@@ -6,8 +6,6 @@
 Welcome to FFTX Project's documentation!
 ========================================
 
-.. image:: FFTX-logo.png
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
