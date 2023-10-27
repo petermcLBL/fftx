@@ -60,13 +60,21 @@ jobs:
         repository: spiral-software/fftx
         ref: develop
         path: fftx
-    - name: Build FFTX
+    - name: Configure FFTX
       env:
         SPIRAL_HOME: ${{ github.workspace }}/spiral
         FFTX_HOME: ${{ github.workspace }}/fftx
       run: |
         cd $FFTX_HOME
         ./config-fftx-libs.sh CPU
+        cat src/library/build-lib-code-failures.txt
+        cat src/library/lib_fftx_*/SourceList.cmake
+    - name: Build FFTX
+      env:
+        SPIRAL_HOME: ${{ github.workspace }}/spiral
+        FFTX_HOME: ${{ github.workspace }}/fftx
+      run: |
+        cd $FFTX_HOME
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -D_codegen=CPU ..
         make -j 2 install
