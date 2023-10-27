@@ -64,11 +64,13 @@ jobs:
         FFTX_HOME: ${{ github.workspace }}/fftx
       run: |
         cd $FFTX_HOME
+        ls $SPIRAL_HOME/bin
+        ls $SPIRAL_HOME/gap/bin
+        which spiral
         ./config-fftx-libs.sh CPU
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -D_codegen=CPU ..
         make -j 2 install
-
 
     # - name: install dependencies
     #   run: |
