@@ -66,8 +66,7 @@ jobs:
         FFTX_HOME: ${{ github.workspace }}/fftx
       run: |
         cd $FFTX_HOME
-        ls $SPIRAL_HOME/namespaces/packages/fftx/init.g
-        cat $SPIRAL_HOME/namespaces/packages/fftx/init.g
+        ls $SPIRAL_HOME/namespaces/packages/*
         ./config-fftx-libs.sh CPU
         cat src/library/build-lib-code-failures.txt
         echo "===== Source files built:"
