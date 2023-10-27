@@ -43,9 +43,9 @@ jobs:
       env:
         SPIRAL_HOME: ${{ github.workspace }}/spiral
       run: |
-        cd $SPIRAL_HOME
+        cd spiral
         mkdir build && cd build
-        cmake -D_codegen=CPU .. 
+        cmake -DCMAKE_INSTALL_PREFIX=$SPIRAL_HOME -D_codegen=CPU .. 
         make -j 2 install
 
   build_fftx:
