@@ -3,8 +3,8 @@ name: Ubuntu build
 on: [push, pull_request]
 
 jobs:
-  build_gcc:
-    name: Check spiral-package-fftx on Linux
+  build_fftx:
+    name: Build SPIRAL and FFTX on Linux
     runs-on: ubuntu-latest
     steps:
     - name: Checkout spiral-software
@@ -30,7 +30,13 @@ jobs:
         repository: spiral-software/spiral-package-mpi
         ref: develop
         path: spiral/namespaces/packages/mpi
-    - name: install dependencies
+    - name: Checkout repo spiral-package-jit
+      uses: actions/checkout@v2
+      with:
+        repository: spiral-software/spiral-package-jit
+        ref: develop
+        path: spiral/namespaces/packages/jit
+    - name: Install dependencies
       run: |
         export DEBIAN_FRONTEND=noninteractive
         sudo apt-get -qqq update
@@ -39,7 +45,7 @@ jobs:
         sudo curl -L -o /usr/local/bin/cmake-easyinstall https://git.io/JvLxY
         sudo chmod a+x /usr/local/bin/cmake-easyinstall
         export CEI_SUDO="sudo"
-    - name: build SPIRAL
+    - name: Build SPIRAL
       env:
         SPIRAL_HOME: ${{ github.workspace }}/spiral
       run: |
@@ -47,30 +53,24 @@ jobs:
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=$SPIRAL_HOME -D_codegen=CPU .. 
         make -j 2 install
-
-  build_fftx:
-    name: Build FFTX on Linux
-    runs-on: ubuntu-latest
-    steps:
+        cd ..
     - name: Checkout FFTX
       uses: actions/checkout@v2
       with:
         repository: spiral-software/fftx
         ref: develop
         path: fftx
-    - name: build FFTX
+    - name: Build FFTX
       env:
         SPIRAL_HOME: ${{ github.workspace }}/spiral
         FFTX_HOME: ${{ github.workspace }}/fftx
       run: |
         cd $FFTX_HOME
-        ls $SPIRAL_HOME/bin
-        ls $SPIRAL_HOME/gap/bin
-        which spiral
         ./config-fftx-libs.sh CPU
         mkdir build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -D_codegen=CPU ..
         make -j 2 install
+        cd ..
 
     # - name: install dependencies
     #   run: |
