@@ -31,7 +31,7 @@ if read_the_docs_build:
 # -- Project information -----------------------------------------------------
 
 project = 'FFTX'
-copyright = '2021, FFTX Team'
+copyright = '2023, FFTX Team'
 author = 'FFTX Team'
 
 
