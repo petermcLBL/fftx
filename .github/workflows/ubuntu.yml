@@ -16,6 +16,7 @@ jobs:
     - name: Checkout repo spiral-package-fftx
       uses: actions/checkout@v4
       with:
+        repository: spiral-software/spiral-package-fftx
         ref: develop
         path: spiral/namespaces/packages/fftx
     - name: Checkout repo spiral-package-simt
