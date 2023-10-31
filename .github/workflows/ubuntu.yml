@@ -67,10 +67,9 @@ jobs:
         FFTX_HOME: ${{ github.workspace }}/fftx
       run: |
         cd $FFTX_HOME
-        ls $SPIRAL_HOME/namespaces/packages/*
         ./config-fftx-libs.sh CPU
         cat src/library/build-lib-code-failures.txt
-        echo "===== Source files built:"
+        echo "##### Source files built:"
         cat src/library/lib_fftx_*/SourceList.cmake
     - name: Build FFTX
       env:
@@ -82,6 +81,14 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=$FFTX_HOME -D_codegen=CPU ..
         make -j 2 install
         cd ..
+    - name: Run FFTX library examples
+      env:
+        SPIRAL_HOME: ${{ github.workspace }}/spiral
+        FFTX_HOME: ${{ github.workspace }}/fftx
+      run: |
+        cd $FFTX_HOME
+        ./bin/testverify_lib
+        ./bin/testrconv_lib
 
     # - name: install dependencies
     #   run: |
