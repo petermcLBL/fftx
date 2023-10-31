@@ -13,19 +13,21 @@ FFTX and SpectralPACK
 
 .. _fftxpfft18:
 
+	Franz Franchetti, Daniele G. Spampinato, Anuva Kulkarni,
+        Doru Thom Popovici, Tze Meng Low,
+	Michael Franusich, Andrew Canning, Peter McCorquodale,
+        Brian Van Straalen, and Phillip Colella,
+	"FFTX and SpectralPack: A First Look",
+	*IEEE International Conference on High Performance Computing,
+        Data, and Analytics*,
+        Bengaluru, India, 2018, pp. 18--27,
+        doi: 10.1109/HiPCW.2018.8634111.
+        | `[ PDF ] <https://www.spiral.net/doc/papers/hipc_2018.pdf>`__
+        `[ Slides ] <https://www.spiral.net/doc/slides/fftx-pfft2018.pdf>`__
+	`[ Conference ] <https://hipc.org/pfft/>`__
 
-	| 
-	| Franz Franchetti, Daniele G. Spampinato, Anuva Kulkarni, Doru Thom Popovici, Tze Meng Low,
-	| Michael Franusich, Andrew Canning, Peter McCorquodale, Brian Van Straalen, Phillip Colella
-	| **FFTX and SpectralPack: A First Look**
-	| *IEEE International Conference on High Performance Computing, Data, and Analytics, 2018*
-	| `[ PDF ] <https://www.spiral.net/doc/papers/hipc_2018.pdf>`__ `[ Slides ] <https://www.spiral.net/doc/slides/fftx-pfft2018.pdf>`__
-	| `[ Conference ] <https://hipc.org/pfft/>`__
-	| 
 
-
-
-	| Franz Franchetti
+        Franz Franchetti,
 	| **SPIRAL, FFTX, and the Path to SpectralPACK**
 	| *Talk given in the* `Nagoya University Booth <http://www.icts.nagoya-u.ac.jp/ja/exhibition/sc/>`__ *at Supercomputing 2018, Dallas*
 	| `[ Slides ] <https://www.spiral.net/doc/slides/sc2018nagoya.pdf>`__
