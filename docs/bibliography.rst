@@ -1,8 +1,3 @@
-
-:tocdepth: 2
-
-
-
 Further Reading
 ===============
 
@@ -20,7 +15,7 @@ FFTX and SpectralPACK
         "**FFTX and SpectralPack: A First Look**",
         *IEEE International Conference on High Performance Computing,
         Data, and Analytics*,
-        Bengaluru, India, 2018, pp. 18--27,
+        Bengaluru, India (2018), pp. 18--27,
         doi: 10.1109/HiPCW.2018.8634111.
         `[ PDF ] <https://www.spiral.net/doc/papers/hipc_2018.pdf>`__
         `[ Slides ] <https://www.spiral.net/doc/slides/fftx-pfft2018.pdf>`__
@@ -29,7 +24,7 @@ FFTX and SpectralPACK
 
         2. Franz Franchetti,
 	"**SPIRAL, FFTX, and the path to SpectralPACK**",
-	*Talk given in the*
+	*talk given in the*
         `Nagoya University Booth <http://www.icts.nagoya-u.ac.jp/ja/exhibition/sc/2018/>`__
         *at Supercomputing 2018, Dallas, TX*
 	`[ Slides ] <https://www.spiral.net/doc/slides/sc2018nagoya.pdf>`__
@@ -37,7 +32,7 @@ FFTX and SpectralPACK
 
         3. Franz Franchetti,
         "**FFTX and SpectralPack: A First Look**",
-	`2019 SIAM Conference on Computational Science and Engineering <https://www.siam.org/conferences/CM/Main/cse19>`__
+	`SIAM Conference on Computational Science and Engineering <https://www.siam.org/conferences/CM/Main/cse19>`__, Spokane, WA (2018).
 	`[ Slides ] <https://www.spiral.net/doc/slides/cse2019.pdf>`__	
 	
 
@@ -323,12 +318,4 @@ Applications
 	| **Parallel Empirical Pseudopotential Electronic Structure Calculations for Million Atom Systems**
 	| *Journal of Computational Physics 160 (1), 29-41, 2000*
 	| 
-
-
-
-	
-	
-
-
-
 
