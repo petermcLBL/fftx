@@ -115,10 +115,10 @@ To cite FFTX in publications use:
         Doru Thom Popovici, Tze Meng Low,
 	Michael Franusich, Andrew Canning, Peter McCorquodale,
         Brian Van Straalen, and Phillip Colella,
-	"FFTX and SpectralPack: A First Look",
+	"**FFTX and SpectralPack: A First Look**",
 	*IEEE International Conference on High Performance Computing,
         Data, and Analytics*,
-        Bengaluru, India, 2018, pp. 18--27,
+        Bengaluru, India (2018), pp. 18--27,
         doi: 10.1109/HiPCW.2018.8634111.
 
 

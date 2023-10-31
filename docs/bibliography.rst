@@ -13,62 +13,60 @@ FFTX and SpectralPACK
 
 .. _fftxpfft18:
 
-	Franz Franchetti, Daniele G. Spampinato, Anuva Kulkarni,
+        1. Franz Franchetti, Daniele G. Spampinato, Anuva Kulkarni,
         Doru Thom Popovici, Tze Meng Low,
-	Michael Franusich, Andrew Canning, Peter McCorquodale,
+        Michael Franusich, Andrew Canning, Peter McCorquodale,
         Brian Van Straalen, and Phillip Colella,
-	"FFTX and SpectralPack: A First Look",
-	*IEEE International Conference on High Performance Computing,
+        "**FFTX and SpectralPack: A First Look**",
+        *IEEE International Conference on High Performance Computing,
         Data, and Analytics*,
         Bengaluru, India, 2018, pp. 18--27,
         doi: 10.1109/HiPCW.2018.8634111.
-        | `[ PDF ] <https://www.spiral.net/doc/papers/hipc_2018.pdf>`__
+        `[ PDF ] <https://www.spiral.net/doc/papers/hipc_2018.pdf>`__
         `[ Slides ] <https://www.spiral.net/doc/slides/fftx-pfft2018.pdf>`__
-	`[ Conference ] <https://hipc.org/pfft/>`__
+        `[ Conference ] <https://hipc.org/pfft/>`__
 
 
-        Franz Franchetti,
-	| **SPIRAL, FFTX, and the Path to SpectralPACK**
-	| *Talk given in the* `Nagoya University Booth <http://www.icts.nagoya-u.ac.jp/ja/exhibition/sc/>`__ *at Supercomputing 2018, Dallas*
-	| `[ Slides ] <https://www.spiral.net/doc/slides/sc2018nagoya.pdf>`__
-	| 
-	
+        2. Franz Franchetti,
+	"**SPIRAL, FFTX, and the path to SpectralPACK**",
+	*Talk given in the*
+        `Nagoya University Booth <http://www.icts.nagoya-u.ac.jp/ja/exhibition/sc/2018/>`__
+        *at Supercomputing 2018, Dallas, TX*
+	`[ Slides ] <https://www.spiral.net/doc/slides/sc2018nagoya.pdf>`__
 
 
-	| Franz Franchetti
-	| **FFTX and SpectralPack: A First Look**
-	| `2019 SIAM Conference on Computational Science and Engineering <https://www.siam.org/conferences/CM/Main/cse19>`__
-	| `[ Slides ] <https://www.spiral.net/doc/slides/cse2019.pdf>`__	
-	| 
+        3. Franz Franchetti,
+        "**FFTX and SpectralPack: A First Look**",
+	`2019 SIAM Conference on Computational Science and Engineering <https://www.siam.org/conferences/CM/Main/cse19>`__
+	`[ Slides ] <https://www.spiral.net/doc/slides/cse2019.pdf>`__	
 	
 
 SPIRAL
 ------
 
-	| 
-	| Franz Franchetti, Tze Meng Low, Doru Thom Popovici, Richard M. Veras, Member, 
-	| Daniele G. Spampinato, Jeremy R. Johnson, Markus Püschel, James C. Hoe, José M. F. Moura:
-	| **SPIRAL: Extreme Performance Portability**
-	| *Proceedings of the IEEE, Special Issue on From High Level Specifications to High Performance Code, 2018*
-	| `[ PDF ] <http://users.ece.cmu.edu/~franzf/papers/08510983_Spiral_IEEE_Final.pdf>`__  
-	| 
+
+        1. Franz Franchetti, Tze Meng Low, Doru Thom Popovici,
+        Richard M. Veras, Member, 
+	Daniele G. Spampinato, Jeremy R. Johnson, Markus Püschel,
+        James C. Hoe, and José M. F. Moura,
+        "**SPIRAL: Extreme Performance Portability**",
+	*Proceedings of the IEEE, Special Issue on From High Level Specifications to High Performance Code* (2018).
+	`[ PDF ] <http://users.ece.cmu.edu/~franzf/papers/08510983_Spiral_IEEE_Final.pdf>`__  
 
 
-
-	| Markus Püschel, Franz Franchetti and Yevgen Voronenko
-	| **Spiral**
-	| *Encyclopedia of Parallel Computing 2011: 1920-1933*
-	| `[ PDF ] <https://users.ece.cmu.edu/~franzf/papers/spiral-enc11.pdf>`__ 
-	|
-
+	2. Markus Püschel, Franz Franchetti and Yevgen Voronenko,
+	"**Spiral**",
+	*Encyclopedia of Parallel Computing* (2011), pp. 1920--1933.
+	`[ PDF ] <https://users.ece.cmu.edu/~franzf/papers/spiral-enc11.pdf>`__ 
 
 	
-	| Markus Püschel, José M. F. Moura, Jeremy R. Johnson, David A. Padua, Manuela M. Veloso, Bryan Singer, 
-	| Jianxin Xiong, Franz Franchetti, Aca Gacic, Yevgen Voronenko, Kang Chen, Robert W. Johnson, Nicholas Rizzolo:
-	| **SPIRAL: Code Generation for DSP Transforms**
-	| *Proceedings of the IEEE 93(2): 232-275, 2005*
-	| `[ PDF ] <http://users.ece.cmu.edu/~franzf/papers/si-spiral.pdf>`__ 
-	| 
+	3. Markus Püschel, José M. F. Moura, Jeremy R. Johnson,
+        David A. Padua, Manuela M. Veloso, Bryan Singer, 
+	Jianxin Xiong, Franz Franchetti, Aca Gacic, Yevgen Voronenko,
+        Kang Chen, Robert W. Johnson, Nicholas Rizzolo,
+        "**SPIRAL: Code Generation for DSP Transforms**",
+	*Proceedings of the IEEE* **93**(2): 232--275, (2005).
+	`[ PDF ] <http://users.ece.cmu.edu/~franzf/papers/si-spiral.pdf>`__ 
 
 
 
