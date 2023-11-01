@@ -5,10 +5,6 @@
 
 .. image:: FFTX-logo.png
 
-====================
-Introduction to FFTX
-====================
-
 .. toctree::
    :maxdepth: 2
    :hidden:
@@ -23,6 +19,10 @@ Introduction to FFTX
    contribute.rst
    team.rst
    bibliography.rst
+
+====================
+Introduction to FFTX
+====================
 
 FFTX is the exascale follow-on to the `FFTW <https://fftw.org>`_
 open-source package for executing the discrete Fast Fourier
