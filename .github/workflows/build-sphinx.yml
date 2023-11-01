@@ -22,37 +22,12 @@ jobs:
         ref: develop
         path: spiral
         
-    - name: Checkout repo spiral-package-fftx
-      uses: actions/checkout@v2
-      with:
-        repository: spiral-software/spiral-package-fftx
-        path: spiral/namespaces/packages/fftx
-        
-    - name: Checkout repo spiral-package-simt
-      uses: actions/checkout@v2
-      with:
-        repository: spiral-software/spiral-package-simt
-        path: spiral/namespaces/packages/simt
-        
-    - name: Checkout repo spiral-package-jit
-      uses: actions/checkout@v2
-      with:
-        repository: spiral-software/spiral-package-jit
-        path: spiral/namespaces/packages/jit
-        
-    - name: Checkout repo spiral-package-mpi
-      uses: actions/checkout@v2
-      with:
-        repository: spiral-software/spiral-package-mpi
-        path: spiral/namespaces/packages/mpi
-
     - name: install dependencies
       ##  uses: actions/checkout@v2
       run: |
         set -x
         echo "working dir = ${{ github.workspace }}"
         ls -l spiral
-        ls -l spiral/namespaces/packages
         export DEBIAN_FRONTEND=noninteractive
         sudo apt-get -qqq update
         sudo apt-get install -y build-essential ca-certificates cmake pkg-config wget
@@ -99,4 +74,3 @@ jobs:
         make Sphinx
         "../docs/buildsite.sh"
       shell: bash
-
