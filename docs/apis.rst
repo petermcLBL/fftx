@@ -11,7 +11,6 @@ APIs
 ..
    Namespaces
 
-.. doxygennamespace:: fftx
-.. doxygennamespace:: fftx_helper
+Documentation from doxygen:
 
 .. doxygenindex::
