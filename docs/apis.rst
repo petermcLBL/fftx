@@ -14,3 +14,4 @@ APIs
 .. doxygennamespace:: fftx
 .. doxygennamespace:: fftx_helper
 
+.. doxygenindex::
