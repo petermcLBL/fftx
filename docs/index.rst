@@ -13,6 +13,7 @@
    index.rst
    install.rst
    apis.rst
+   distributed.rst
    extending.rst
    faq.rst
    gethelp.rst
