@@ -66,4 +66,7 @@ html_theme = 'sphinx_rtd_theme'
 
 # Breathe Configuration
 breathe_default_project = 'FFTX'
-breathe_default_members = ('members', 'protected-members', 'private-members')
+# breathe_default_members = ('members', 'protected-members', 'private-members')
+# breathe_default_members = ('members')
+breathe_default_members = ()
+breathe_show_include = False
