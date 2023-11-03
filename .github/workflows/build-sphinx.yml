@@ -74,5 +74,6 @@ jobs:
         make Sphinx
         find . -iname namespacefftx.xml
         ls /home/runner/work/fftx/fftx/fftx/build/docs/doxygen/xml/
+        mv /home/runner/work/fftx/fftx/fftx/build/docs/doxygen/html/ /home/runner/work/fftx/fftx/fftx/build/docs/sphinx/html
         "../docs/buildsite.sh"
       shell: bash
