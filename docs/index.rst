@@ -6,6 +6,9 @@
 .. image:: FFTX-logo.png
    :alt: [FFTX]
 
+FFTX documentation
+==================
+
 FFTX is the exascale follow-on to the `FFTW <https://fftw.org>`_
 open-source package for executing the discrete Fast Fourier
 Transform, as well as higher-level operations composed of FFTs
