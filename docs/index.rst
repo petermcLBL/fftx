@@ -6,22 +6,6 @@
 .. image:: FFTX-logo.png
    :alt: [FFTX]
 
-.. toctree::
-   :maxdepth: 2
-   :hidden:
-   :caption: Contents:
-
-   introduction.rst
-   install.rst
-   apis.rst
-   distributed.rst
-   extending.rst
-   faq.rst
-   gethelp.rst
-   contribute.rst
-   team.rst
-   bibliography.rst
-
 FFTX is the exascale follow-on to the `FFTW <https://fftw.org>`_
 open-source package for executing the discrete Fast Fourier
 Transform, as well as higher-level operations composed of FFTs
@@ -34,6 +18,21 @@ environments.
 FFTX is being developed as a cooperative effort between Lawrence
 Berkeley National Laboratory, Carnegie Mellon University, and
 SpiralGen, Inc.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   introduction.rst
+   install.rst
+   apis.rst
+   distributed.rst
+   extending.rst
+   faq.rst
+   gethelp.rst
+   contribute.rst
+   team.rst
+   bibliography.rst
 
 Indices and tables
 ==================
