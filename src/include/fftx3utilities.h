@@ -51,6 +51,7 @@ fftx::point_t<DIM> shiftInBox(fftx::point_t<DIM> a_pt,
 }
 
 // Set a_arrOut = a_arrIn pointwise.
+/** Set the contents of the first array to the contents of the second array. */
 template<int DIM, typename T>
 void copyArray(fftx::array_t<DIM, T>& a_arrOut,
                const fftx::array_t<DIM, T>& a_arrIn)

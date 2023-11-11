@@ -230,54 +230,110 @@ inline void printJITBackend(std::string name, std::vector<int> sizes) {
     #endif
 }
 
+/** Class for an FFTX problem defined by:
+    - FFTXProblem::args, containing pointers to arrays to be used;
+    - FFTXProblem::sizes, containing problem size;
+    - FFTXProblem::name, a string that specifies the transform type.
+   */
 class FFTXProblem {
 public:
 
+  /** Array of length 3 that contains the following.
+      - \c args[0]:  pointer to output array.
+      - \c args[1]:  pointer to input array.
+      - \c args[2]:  pointer to symbol array (not used by all transforms).
+  */
     std::vector<void*> args;
+
+  /** Size of transform, as a std::vector<int> of length equal to the dimension, with the component in each coordinate direction representing the transform size in that direction.
+   */
     std::vector<int> sizes;
     std::string res;
     std::map<std::vector<int>, Executor> executors;
+
+  
+  /** String that specifies the type of transform, which is one of the following.
+    - \c "mddft": forward complex-to-complex 3D FFT
+    - \c "imddft":  inverse complex-to-complex 3D FFT
+    - \c "mdprdft":  real-to-complex 3D FFT
+    - \c "imdprdft":  complex-to-real 3D FFT
+    - \c "rconv":  real 3D convolution
+    - \c "b1dft" or \c "dftbat":  forward 1D batch FFT
+    - \c "ib1dft" or \c "idftbat":  inverse 1D batch FFT
+  */
     std::string name;
+
+
+  /** Default constructor that leaves FFTXProblem in an undefined state.
+   */
     FFTXProblem(){
     }
 
+  /** Constructor that sets FFTXProblem::name only, to the argument.
+   */
     FFTXProblem(std::string name1) {
         name = name1;
     }
 
+  /** Constructor that sets FFTXProblem::args only, to the argument.
+   */
     FFTXProblem(const std::vector<void*>& args1) {
         args = args1;
-
     }
+
+  /** Constructor that sets FFTXProblem::sizes only, to the argument.
+   */
     FFTXProblem(const std::vector<int>& sizes1) {
        sizes = sizes1;
 
     }
+
+  /** Constructor that sets FFTXProblem::args and FFTXProblem::sizes only, to the arguments.
+   */
     FFTXProblem(const std::vector<void*>& args1, const std::vector<int>& sizes1) {
         args = args1;   
         sizes = sizes1;
     }
+
+  /** Constructor that sets FFTXProblem::sizes and FFTXProblem::name only, to the arguments.
+   */
     FFTXProblem(const std::vector<int> sizes1, std::string name1) {  
         sizes = sizes1;
         name = name1;
     }
-     FFTXProblem(const std::vector<void*>& args1, const std::vector<int>& sizes1, std::string name1) {
+
+
+  /** Constructor that sets FFTXProblem::args, FFTXProblem::sizes, and FFTXProblem::name, to the arguments.
+   */
+    FFTXProblem(const std::vector<void*>& args1, const std::vector<int>& sizes1, std::string name1) {
         args = args1;   
         sizes = sizes1;
         name = name1;
     }
 
+  /** Sets FFTXProblem::sizes. */
     void setSizes(const std::vector<int>& sizes1);
+
+  /** Sets FFTXProblem::args. */
     void setArgs(const std::vector<void*>& args1);
+
+  /** Sets FFTXProblem::name. */
     void setName(std::string name);
+
+  /** Performs the transform. */
     void transform();
+
     std::string semantics2();
     virtual void randomProblemInstance() = 0;
     virtual void semantics() = 0;
     float gpuTime;
     void run(Executor e);
     std::string returnJIT();
+
+  /** Returns time taken by the GPU to perform the transform, in milliseconds. */
     float getTime();
+
+  /** Destructor. */
     ~FFTXProblem(){}
 
 };

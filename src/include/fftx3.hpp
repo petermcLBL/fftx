@@ -29,18 +29,19 @@
 #include <cassert>
 #include <complex>
 #include <iomanip>
-/*! \mainpage FFTX Package
- *
- * \section intro_sec Introduction
- *
- * This is the introduction.
- *
- * \section install_sec Installation
- *
- * \subsection step1 Step 1: Opening the box
- *
- * etc...
- */
+/**
+   \mainpage FFTX Package
+ 
+   \section intro_sec Introduction
+ 
+   FFTX is blah blah.
+   
+   \section install_sec Installation
+   
+   \subsection step1 Step 1: Opening the box
+   
+   etc...
+*/
 
 // Set this to 1 for row-major order, 0 for column-major order.
 #define FFTX_ROW_MAJOR_ORDER 1
@@ -52,13 +53,13 @@ namespace fftx
 {
 
   /**
-   Is this a FFTX codegen program, or is this application code using a generated transform.
+     Is this a FFTX codegen program, or is this application code using a generated transform.
   */
   static bool tracing = false; // when creating a trace program user sets this to 'true'
 
   /**
-    counter for genereated variable names duringn FFTX codegen tracing.  Not meant for FFTX users but can be
-    used when debugging codegen itself
+     Counter for generated variable names duringn FFTX codegen tracing.
+     Not meant for FFTX users, but can be used when debugging codegen itself.
   */
   static uint64_t ID=1; // variable naming counter
   
@@ -73,12 +74,17 @@ namespace fftx
   };
 
   /**
-   non-owning global ptr object.  Can be used in place of upcxx::global_ptr
+     A non-owning global pointer object.
+     Can be used in place of upcxx::global_ptr.
 
-   Most of the FFTX API assumes that user application code owns their primary data structures.  This
-   class encapsulates a user space raw data pointer for use within our transforms.  The destructor
-   does not delete the pointer.  It is not reference-counting. It is not made to be unique.  They can be copied 
-   moved, etc like a basic C struct.
+     Most of the FFTX API assumes that the user application code owns
+     its primary data structures. 
+     This class encapsulates a user space raw data pointer for use within
+     our transforms.
+
+     The destructor does not delete the pointer.  It is not reference-counting.
+     It is not made to be unique.  A global_ptr can be copied, moved, etc.,
+     like a basic C struct.
   */
   template <typename T>
   class global_ptr
@@ -86,9 +92,12 @@ namespace fftx
     T* _ptr;
     intrank_t _domain;
     int _device;
+
   public:
     using element_type = T;
+
     global_ptr():_ptr{nullptr},_domain{0}, _device{0}{}
+
     /// strong constructor
     /**  Real strong constructor */
     global_ptr(T* ptr, int domain=0, int device=0)
@@ -96,19 +105,24 @@ namespace fftx
 
     bool is_null() const;
 
-    /** Returns true is this local compute context can successfully call the local() function and expect
-        to get a pointer that is dereferencable */
+    /** Returns true if this local compute context can successfully call
+        the local() function and expect to get a pointer that
+        can be dereferenced. */
     bool is_local() const;
 
     /** what compute domain would answer "true" to "isLocal().  Currently this just tests if the MPI rank
         matches my_rank */
     intrank_t where() const {return _domain;}
+
     /** which GPU device is this pointer associated with */
     int device() const {return _device;}
+
     /** returns the raw pointer.  This pointer can only be dereferences is isLocal() ==true */
     T* local() {return _ptr;}
+
     /** returns the raw pointer.  This pointer can only be dereferences is isLocal() ==true */
     const T* local() const {return _ptr;}
+
     /** type erasure cast */
     //operator global_ptr<void>(){ return global_ptr<void>(_ptr, _domain, _device);}
   };
@@ -116,40 +130,80 @@ namespace fftx
  
     
 
-  /** integer index into a Z^DIM space. */
+  /**
+     A tuple of integer coordinates as an index into a Z^DIM space.
+
+     Usually constructed with an array argument, such as:
+     fftx::point_t<3> pt( {1, 2, 3} );
+   */
   template<int DIM>
   struct point_t
   {
+    /** Array containing the coordinate in each direction. */
     int x[DIM];
-    /** returns a new point_t in one lower dimension, dropping the last value */
-    point_t<DIM-1> project() const;
-       /** returns a new point_t in one lower dimension, dropping the first value */
-    point_t<DIM-1> projectC() const;
-    int operator[](unsigned char a_id) const {return x[a_id];}
-    int& operator[](unsigned char a_id) {return x[a_id];}
-    bool operator==(const point_t<DIM>& a_rhs) const;
+
+    /** Assigns this point_t by setting the coordinates in every dimension to the argument. */
     void operator=(int a_default);
+
+    /** Returns the value of the coordinate in the specified direction. */
+    int operator[](unsigned char a_id) const {return x[a_id];}
+
+    /** Returns a reference to the coordinate in the specified direction. */
+    int& operator[](unsigned char a_id) {return x[a_id];}
+
+    /** Returns true if all coordinates of this point_t are the same as the corresponding coordinates in the argument point_t, and false if any of the coordinates differ. */
+    bool operator==(const point_t<DIM>& a_rhs) const;
+
+    /** Modifies this point_t by multiplying all of its coordinates by the argument. */
     point_t<DIM> operator*(int scale) const;
-    static point_t<DIM> Unit();
-    static point_t<DIM> Zero();
+
+    /** Returns the dimension of this point_t. */
     static int dim() {return DIM;}
-    /** reverse the odering of the tuple, reutrn by value */
+
+    /** Returns a new point_t in one lower dimension, dropping the last coordinate value. */
+    point_t<DIM-1> project() const;
+
+    /** Returns a new point_t in one lower dimension, dropping the first coordinate value. */
+    point_t<DIM-1> projectC() const;
+
+    /** Returns a point_t with all components equal to one. */
+    static point_t<DIM> Unit();
+
+    /** Returns a point_t with all components equal to zero. */
+    static point_t<DIM> Zero();
+
+    /** Returns a point_t with the same coordinates as this point_t but with their ordering reversed. */
     point_t<DIM> flipped() const { point_t<DIM> rtn; for (int d=0; d<DIM; d++) { rtn[d] = x[DIM-1 - d]; } return rtn; }
   };
 
 
-  /** a pair of point_t objects representing a contiguous range of points in Z^DIM */                            
+  /** A rectangular domain on an integer lattice in DIM dimensions, defined by its low and high corners in index space. */
   template<int DIM>
   struct box_t
   {
+    /** Default constructor leaves box in an undefined state. */
     box_t() = default;
+
+    /** Constructs a box having the given inputs as the low and high corners, respectively. */
     box_t(const point_t<DIM>&& a, const point_t<DIM>&& b)
       : lo(a), hi(b) { ; }
-    point_t<DIM> lo, hi;
+
+    /** The low corner of the box in index space. */
+    point_t<DIM> lo;
+
+    /** The high corner of the box in index space. */
+    point_t<DIM> hi;
+
+    /** Returns the number of points in the box in index space. */
     std::size_t size() const;
+    
+    /** Returns true if the corners of this box are the same as the corners of the argument box. */
     bool operator==(const box_t<DIM>& rhs) const {return lo==rhs.lo && hi == rhs.hi;}
+
+    /** Returns a point_t object containing the length of the box in each coordinate direction. */
     point_t<DIM> extents() const { point_t<DIM> rtn(hi); for(int i=0; i<DIM; i++) rtn[i]-=(lo[i]-1); return rtn;}
-    /** returns a box_t object in one lower dimension, dropping the first coordinate value in both lo and hi */
+
+    /** Returns a box_t object in one lower dimension, dropping the first coordinate value in both lo and hi. */
     box_t<DIM-1> projectC() const
     {
       return box_t<DIM-1>(lo.projectC(),hi.projectC());
@@ -159,10 +213,10 @@ namespace fftx
   /** non-owning view into a contiugous array of data.   This is a class that is foeshadowing a C++ class mdspan,
       a multi-dimensional extention to std::span
       
-      if fftx::tracing == true, then array_t::array_t(const box_t<DIM>& ) construction is 
+      if fftx::tracing == true, then fftx::array_t(const box_t<DIM>& ) construction is 
       a symbolic placeholder in a computational DAG that is translated into the code generator.
 
-      if fftx::tracing == false, then array_t::array_t(const box_t<DIM>&) will allocate a global_ptr sized 
+      if fftx::tracing == false, then fftx::array_t(const box_t<DIM>&) will allocate a global_ptr sized 
       to hold box_t::size elements of data.
  */
   template<int DIM, typename T>
@@ -188,6 +242,7 @@ namespace fftx
         }
     }
 
+    /** Destructor, which deletes the local data if there is any. */
     ~array_t()
     {
       if (m_local_data != nullptr)
@@ -196,6 +251,7 @@ namespace fftx
         }
     }
 
+    /** Swap the contents of first array and second array. */
     friend void swap(array_t& first, array_t& second)
     {
       using std::swap;
@@ -206,8 +262,13 @@ namespace fftx
 
     T* m_local_data = nullptr;
     global_ptr<T> m_data;
+
+    /** The domain (box) on which the array is defined. */
     box_t<DIM>    m_domain;
+
+    /** Array restricted to subbox. */
     array_t<DIM, T> subArray(box_t<DIM>&& subbox);
+
     uint64_t id() const { assert(tracing); return (uint64_t)m_data.local();}
   };
 
