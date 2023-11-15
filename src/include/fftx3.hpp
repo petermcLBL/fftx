@@ -31,16 +31,6 @@
 #include <iomanip>
 /**
    \mainpage FFTX Package
- 
-   \section intro_sec Introduction
- 
-   FFTX is blah blah.
-   
-   \section install_sec Installation
-   
-   \subsection step1 Step 1: Opening the box
-   
-   etc...
 */
 
 // Set this to 1 for row-major order, 0 for column-major order.
@@ -79,7 +69,7 @@ namespace fftx
 
      Most of the FFTX API assumes that the user application code owns
      its primary data structures. 
-     This class encapsulates a user space raw data pointer for use within
+     This class encapsulates a user-space raw data pointer for use within
      our transforms.
 
      The destructor does not delete the pointer.  It is not reference-counting.
@@ -96,31 +86,34 @@ namespace fftx
   public:
     using element_type = T;
 
+    /** Default constructor with no data, no domain, no device. */
     global_ptr():_ptr{nullptr},_domain{0}, _device{0}{}
 
-    /// strong constructor
-    /**  Real strong constructor */
+    /** Real strong constructor. */
     global_ptr(T* ptr, int domain=0, int device=0)
       :_ptr{ptr}, _domain{domain}, _device{device}{ }
 
-    bool is_null() const;
+    /** Returns true if this object has no data array assigned to it. */
+    bool is_null() const { return (_ptr == nullptr); }
 
     /** Returns true if this local compute context can successfully call
         the local() function and expect to get a pointer that
         can be dereferenced. */
     bool is_local() const;
 
-    /** what compute domain would answer "true" to "isLocal().  Currently this just tests if the MPI rank
-        matches my_rank */
+    /** Returns the compute domain that would answer "true" to "<tt>isLocal()</tt>".
+        Currently this just tests if the MPI rank matches my_rank. */
     intrank_t where() const {return _domain;}
 
-    /** which GPU device is this pointer associated with */
+    /** Returns the GPU device that this pointer associated with. */
     int device() const {return _device;}
 
-    /** returns the raw pointer.  This pointer can only be dereferences is isLocal() ==true */
+    /** Returns the raw pointer.  This pointer can only be dereferenced if
+        <tt> is_local()</tt> is true. */
     T* local() {return _ptr;}
 
-    /** returns the raw pointer.  This pointer can only be dereferences is isLocal() ==true */
+    /** Returns the raw pointer.  This pointer can only be dereferenced if
+        <tt> is_local()</tt> is true. */
     const T* local() const {return _ptr;}
 
     /** type erasure cast */
@@ -131,10 +124,11 @@ namespace fftx
     
 
   /**
-     A tuple of integer coordinates as an index into a Z^DIM space.
+     A tuple of integer coordinates as an index into
+     a <b>Z</b><sup>DIM</sup> space.
 
      Usually constructed with an array argument, such as:
-     fftx::point_t<3> pt( {1, 2, 3} );
+     <tt>fftx::point_t<3> pt( {1, 2, 3} );</tt>
    */
   template<int DIM>
   struct point_t
@@ -160,6 +154,9 @@ namespace fftx
     /** Returns the dimension of this point_t. */
     static int dim() {return DIM;}
 
+    /** Returns the product of the components of this point_t. */
+    size_t product();
+    
     /** Returns a new point_t in one lower dimension, dropping the last coordinate value. */
     point_t<DIM-1> project() const;
 
@@ -188,6 +185,10 @@ namespace fftx
     box_t(const point_t<DIM>&& a, const point_t<DIM>&& b)
       : lo(a), hi(b) { ; }
 
+    /** Constructs a box having the given inputs as the low and high corners, respectively. */
+    box_t(const point_t<DIM>& a, const point_t<DIM>& b)
+      : lo(a), hi(b) { ; }
+
     /** The low corner of the box in index space. */
     point_t<DIM> lo;
 
@@ -203,36 +204,42 @@ namespace fftx
     /** Returns a point_t object containing the length of the box in each coordinate direction. */
     point_t<DIM> extents() const { point_t<DIM> rtn(hi); for(int i=0; i<DIM; i++) rtn[i]-=(lo[i]-1); return rtn;}
 
-    /** Returns a box_t object in one lower dimension, dropping the first coordinate value in both lo and hi. */
+    /** Returns a box_t object in one lower dimension, dropping the first coordinate value in both box_t::lo and box_t::hi. */
     box_t<DIM-1> projectC() const
     {
       return box_t<DIM-1>(lo.projectC(),hi.projectC());
     }
   };
 
-  /** non-owning view into a contiugous array of data.   This is a class that is foeshadowing a C++ class mdspan,
-      a multi-dimensional extention to std::span
-      
-      if fftx::tracing == true, then fftx::array_t(const box_t<DIM>& ) construction is 
-      a symbolic placeholder in a computational DAG that is translated into the code generator.
-
-      if fftx::tracing == false, then fftx::array_t(const box_t<DIM>&) will allocate a global_ptr sized 
-      to hold box_t::size elements of data.
- */
+  /** Non-owning view into a contiguous array of multi-dimensional data.
+   */
   template<int DIM, typename T>
   struct array_t
   {
  
     array_t() = default;
-    /** string constructor from an aliased global_ptr object.  This constructor is an error when fftx::tracing==true*/
+
+    /** Strong constructor from an aliased global_ptr object.
+        This constructor is an error when <tt>fftx::tracing</tt> is true. */
     array_t(global_ptr<T>&& p, const box_t<DIM>& a_box)
       :m_data(p), m_domain(a_box) {;}
-    array_t(const box_t<DIM>& m_box):m_domain(m_box)
+
+    /** Constructor from a domain.
+
+      If <tt>fftx::tracing</tt> is true, then this constructor
+      is a symbolic placeholder in a computational DAG that
+      is translated into the code generator.
+        
+      If <tt>fftx::tracing</tt> is false, then this constructor
+      will allocate a global_ptr that is sized 
+      to hold <tt>a_box.size()</tt> elements of data of type T.
+    */
+    array_t(const box_t<DIM>& a_box):m_domain(a_box)
     {
-      if(tracing)
+      if (tracing)
         {
           m_data = global_ptr<T>((T*)ID);
-          std::cout<<"var_"<<ID<<":= var(\"var_"<<ID<<"\", BoxND("<<m_box.extents()<<", TReal));\n";
+          std::cout<<"var_"<<ID<<":= var(\"var_"<<ID<<"\", BoxND("<<a_box.extents()<<", TReal));\n";
           ID++;
         }
       else
@@ -251,7 +258,7 @@ namespace fftx
         }
     }
 
-    /** Swap the contents of first array and second array. */
+    /** Swaps the contents of first array and second array. */
     friend void swap(array_t& first, array_t& second)
     {
       using std::swap;
@@ -266,41 +273,69 @@ namespace fftx
     /** The domain (box) on which the array is defined. */
     box_t<DIM>    m_domain;
 
-    /** Array restricted to subbox. */
     array_t<DIM, T> subArray(box_t<DIM>&& subbox);
 
     uint64_t id() const { assert(tracing); return (uint64_t)m_data.local();}
   };
 
   
-  /**
-   * \defGroup FFA  global free functions in fftx namespace used in application programs
-   */
-  /// @page page1 FFTX Free functions for Applications
-  /// @ingroup FFA
-  
-  /**
-   * \defGroup FFS global free functions in fftx namespace used in code generation programs
-   */
-  
-  /**apply function f to each point in array where Func has the signature
-   *  void f(T& value, const point_t<DIM>& location)
-   * \addToGroup FFA
+  /** \relates fftx::array_t
+      Applies the argument function to each element of the argument array,
+      where the argument function <tt>f</tt> has the signature<br>
+      <tt>void f(T& value, const fftx::point_t<DIM>& location)</tt>.
+
+      The function argument is typically specified as a lambda expression, as in:
+      \code{.cpp}
+      fftx::array_t<DIM, T>& array;
+      forall([varlist](T(&v), const fftx::point_t<DIM>& location)
+      {
+         // ... assignment of v, or operations or function calls on v
+      }, array);
+      \endcode
+      which loops through <tt>array</tt> over its domain,
+      with <tt>v</tt> as array element at index <tt>location</tt>
+      to be either assigned or have operations or
+      functions called on it,
+      and <em>varlist</em> (which may be empty)
+      is a comma-separated list of previously declared
+      variables that are used within the block.
   */
   template<int DIM, typename T, typename Func>
   void forall(Func f, array_t<DIM, T>& array);
 
-  /**apply function f to each point in two arrays where Func has the signature
-   * void f(T1& value, const T2&, const point_t<DIM>& location)
-   *  \ingroup FFA
+  /** \relates fftx::array_t
+      Applies the argument function to each element of the
+      two argument arrays,
+      where the argument function <tt>f</tt> has the signature<br>
+      <tt>void f(T1& value, const T2&, const point_t<DIM>& location)</tt>.
+
+      The two arrays <tt>array</tt> and <tt>array2</tt> must
+      have the same domain.
+
+      The function argument is typically specified as a lambda expression, as in:
+      \code{.cpp}
+      fftx::array_t<DIM, T1>& array;
+      const fftx::array_t<DIM, T2>& array2;
+      forall([varlist](T1(&v), T2(&v2), const fftx::point_t<DIM>& location)
+      {
+         // ... assignment of v, or operations or function calls on v and v2
+      }, array, array2);
+      \endcode
+      which loops through the common domain of <tt>array</tt> and <tt>array2</tt>,
+      taking element <tt>v</tt> of <tt>array</tt>
+      and element <tt>v2</tt> of <tt>array2</tt>
+      at index <tt>location</tt>
+      having operations or functions called on them
+      and possibly assigning <tt>v</tt>,
+      and <em>varlist</em> (which may be empty)
+      is a comma-separated list of previously declared
+      variables that are used within the block.
   */
   template<int DIM, typename T1, typename T2, typename Func>
   void forall(Func f, array_t<DIM, T1>& array, const array_t<DIM, T2>& array2);
 
 
-  /** component alias  Subselects outer-most dimension (the not contiguous one) 
-   *   \ingroup FFS
-  */
+  // component alias  Subselects outer-most dimension (the not contiguous one) 
   template<int DIM, typename T>
   array_t<DIM-1, T> nth(array_t<DIM, T>& array, int index)
   {
@@ -765,20 +800,10 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     closeScalarDAG<DIM>(varNames(a_vars)+','+varNames(a_vars2), name);
 
   }
-  
-  template<int DIM>
-  inline point_t<DIM> lengthsBox(const box_t<DIM>& a_bx)
-  {
-    point_t<DIM> lo = a_bx.lo;
-    point_t<DIM> hi = a_bx.hi;
-    point_t<DIM> lengths;
-    for (int d = 0; d < DIM; d++)
-      {
-        lengths.x[d] = hi[d] - lo[d] + 1;
-      }
-    return lengths;
-  }
 
+/** \relates fftx::box_t
+    Returns true if the given point_t is contained in the given box_t.
+*/
   template<int DIM>
   inline bool isInBox(point_t<DIM> a_pt, const box_t<DIM>& a_bx)
   {
@@ -792,11 +817,18 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return true;
   }
 
+/** \relates fftx::box_t
+    Returns the position of the given point_t within the given box_t
+    according to the ordering of points within it, starting from 0.
+
+    This function is the inverse of pointFromPositionBox()
+    on the same box_t.
+ */
   template<int DIM>
   inline size_t positionInBox(point_t<DIM> a_pt, const box_t<DIM>& a_bx)
   {
     point_t<DIM> lo = a_bx.lo;
-    point_t<DIM> lengths = lengthsBox(a_bx);
+    point_t<DIM> lengths = a_bx.extents();
 
 #if FFTX_ROW_MAJOR_ORDER
     // Row-major order: Last dimension changes fastest.
@@ -819,12 +851,18 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return disp;
   }
 
-  // inverse of positionInBox()
+/** \relates fftx::box_t
+    Returns the point_t that is at the given position in the given box_t,
+    according to the ordering of points within it, starting from 0.
+
+    This function is the inverse of positionInBox()
+    on the same box_t.
+ */
   template<int DIM>
   inline point_t<DIM> pointFromPositionBox(size_t a_ind, const box_t<DIM>& a_bx)
   {
     point_t<DIM> lo = a_bx.lo;
-    point_t<DIM> lengths = lengthsBox(a_bx);
+    point_t<DIM> lengths = a_bx.extents();
 
     point_t<DIM> pt;
 
@@ -870,6 +908,17 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
   template<int DIM>
   inline std::size_t bsize(int const lo[], int const hi[]){ return (hi[DIM-1]-lo[DIM-1]+1)*bsize<DIM-1>(lo, hi);}
 
+  template<int DIM>
+  inline size_t point_t<DIM>::product()
+  {
+    size_t prod = 1;
+    for (int d = 0; d < DIM; d++)
+      {
+        prod *= x[d];
+      }
+    return prod;
+  }
+    
   template<int DIM>
   inline point_t<DIM-1> point_t<DIM>::project() const
   {
