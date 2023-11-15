@@ -239,9 +239,9 @@ class FFTXProblem {
 public:
 
   /** Array of length 3 that contains the following.
-      - \c args[0]:  pointer to output array.
-      - \c args[1]:  pointer to input array.
-      - \c args[2]:  pointer to symbol array (not used by all transforms).
+      - <tt>args[0]</tt>:  pointer to output array.
+      - <tt>args[1]</tt>:  pointer to input array.
+      - <tt>args[2]</tt>:  pointer to symbol array (not used by all transforms).
   */
     std::vector<void*> args;
 
