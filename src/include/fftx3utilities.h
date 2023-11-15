@@ -19,18 +19,21 @@ fftx::box_t<DIM> domainFromSize(const fftx::point_t<DIM>& a_size,
   return bx;
 }
 
+/** \internal */
 inline void getScalarVal(double& a_val,
                          double a_in)
 {
   a_val = a_in;
 }
 
+/** \internal */
 inline void getScalarVal(std::complex<double>& a_val,
                          double a_in)
 {
   a_val =std::complex<double>(a_in, 0.);
 }
 
+/** \internal */
 template<typename T>
 inline T scalarVal(double a_in)
 {
@@ -255,6 +258,7 @@ void writeArray(fftx::array_t<DIM, T>& a_arr)
     }
 }
 
+/** \internal */
 inline void updateMax(double& a_max,
                       double a_here)
 {
@@ -264,6 +268,7 @@ inline void updateMax(double& a_max,
     }
 }
 
+/** \internal */
 template<typename T>
 inline void updateMaxAbs(double& a_max,
                          const T& a_here)
@@ -446,6 +451,7 @@ fftx::point_t<DIM> truncatedComplexDimensions(fftx::point_t<DIM>& a_size)
 }
 
 
+/** \internal */
 inline int sym_index(int i, int lo, int hi)
 { // index of i in array lo:hi that should be conjugate if Hermitian symmetry
   int ret = i;
@@ -456,6 +462,7 @@ inline int sym_index(int i, int lo, int hi)
   return ret;
 }
 
+/** \internal */
 template<int DIM>
 fftx::point_t<DIM> sym_point(fftx::point_t<DIM> a_pt,
                              fftx::box_t<DIM> a_bx)
@@ -491,8 +498,9 @@ fftx::point_t<DIM> sym_point(fftx::point_t<DIM> a_pt,
     so this function sets those elements accordingly.
 
     This function does not change the second argument array, but only
-    checks that its domain is compatible with the domain of the first
-    argument array.
+    checks that its domain is correct for a real-valued multidimensional array
+    that is the result of a multidimensional discrete Fourier transform
+    on the domain of the first array.
 
     If T_IN is not <tt>std::complex<double></tt>
     or T_OUT is not <tt>double</tt>, then
@@ -504,21 +512,25 @@ void symmetrizeHermitian(fftx::array_t<DIM, T_IN>& a_arrIn,
                          fftx::array_t<DIM, T_OUT>& a_arrOut);
 
 
+/** \internal */
 template<int DIM>
 void symmetrizeHermitian(fftx::array_t<DIM, double>& a_arrIn,
                          fftx::array_t<DIM, double>& a_arrOut)
 { };
 
+/** \internal */
 template<int DIM>
 void symmetrizeHermitian(fftx::array_t<DIM, double>& a_arrIn,
                          fftx::array_t<DIM, std::complex<double>>& a_arrOut)
 { };
 
+/** \internal */
 template<int DIM>
 void symmetrizeHermitian(fftx::array_t<DIM, std::complex<double>>& a_arrIn,
                          fftx::array_t<DIM, std::complex<double>>& a_arrOut)
 { };
 
+/** \internal */
 template<int DIM>
 void symmetrizeHermitian(fftx::array_t<DIM, std::complex<double> >& a_arrIn,
                          fftx::array_t<DIM, double>& a_arrOut)
@@ -582,11 +594,14 @@ void symmetrizeHermitian(fftx::array_t<DIM, std::complex<double> >& a_arrIn,
     }
 }
 
+
+/** \internal */
 template<int DIM, typename T_IN, typename T_OUT>
 bool checkSymmetryHermitian(fftx::array_t<DIM, T_IN>& a_arrIn,
                             fftx::array_t<DIM, T_OUT>& a_arrOut);
 
 
+/** \internal */
 template<int DIM>
 bool checkSymmetryHermitian(fftx::array_t<DIM, double>& a_arrIn,
                             fftx::array_t<DIM, std::complex<double>>& a_arrOut)
@@ -594,6 +609,7 @@ bool checkSymmetryHermitian(fftx::array_t<DIM, double>& a_arrIn,
   return true;
 }
 
+/** \internal */
 template<int DIM>
 bool checkSymmetryHermitian(fftx::array_t<DIM, std::complex<double>>& a_arrIn,
                             fftx::array_t<DIM, std::complex<double>>& a_arrOut)
@@ -601,6 +617,8 @@ bool checkSymmetryHermitian(fftx::array_t<DIM, std::complex<double>>& a_arrIn,
   return true;
 }
 
+// Not a good idea to be checking equality of reals.
+/** \internal */
 template<int DIM>
 bool checkSymmetryHermitian
 (fftx::array_t<DIM, std::complex<double> >& a_arrIn,
@@ -637,6 +655,7 @@ bool checkSymmetryHermitian
   return is_symmetric;
 }
 
+/** \internal */
 template<int DIM>
 void fillSymmetric(fftx::array_t<DIM, std::complex<double> >& a_arrOut,
                    fftx::array_t<DIM, std::complex<double> >& a_arrIn)

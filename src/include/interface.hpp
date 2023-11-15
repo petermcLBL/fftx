@@ -323,11 +323,17 @@ public:
   /** Performs the transform. */
     void transform();
 
+  /** \internal */
     std::string semantics2();
+  /** \internal */
     virtual void randomProblemInstance() = 0;
+  /** \internal */
     virtual void semantics() = 0;
+  /** \internal */
     float gpuTime;
+  /** \internal */
     void run(Executor e);
+  /** \internal */
     std::string returnJIT();
 
   /** Returns time taken by the GPU to perform the transform, in milliseconds. */

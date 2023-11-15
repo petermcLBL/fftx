@@ -53,10 +53,13 @@ namespace fftx
   */
   static uint64_t ID=1; // variable naming counter
   
+  /** \internal */
   typedef int intrank_t; // just useful for self-documenting code.
 
+  /** \internal */
   struct handle_implem_t;
 
+  /** \internal */
   struct handle_t
   {
   private:
@@ -336,6 +339,7 @@ namespace fftx
 
 
   // component alias  Subselects outer-most dimension (the not contiguous one) 
+  /** \internal */
   template<int DIM, typename T>
   array_t<DIM-1, T> nth(array_t<DIM, T>& array, int index)
   {
@@ -345,17 +349,20 @@ namespace fftx
     return rtn;
   }
 
+  /** \internal */
   template<int DIM, typename T>
   void copy(array_t<DIM, T>& dest, const array_t<DIM, T>& src)
   {
     std::cout<<"    TDAGNode(TGath(fBox("<<src.m_domain.extents()<<")),var_"<<dest.id()<<", var_"<<src.id()<<"),\n";
   }
 
+  /** \internal */
   inline void rawScript(const std::string& a_rawScript)
   {
     std::cout<<"\n"<<a_rawScript<<"\n";
   }
 
+  /** \internal */
   template <typename T>
   struct TypeName
   {
@@ -367,6 +374,7 @@ namespace fftx
 
 // a specialization for each type of those you want to support
 // and don't like the string returned by typeid
+  /** \internal */
   template <>
   struct TypeName<double>
   {
@@ -375,6 +383,7 @@ namespace fftx
       return "double";
     }
   };
+  /** \internal */
   template <>
   struct TypeName<std::complex<double>>
   {
@@ -384,6 +393,7 @@ namespace fftx
     }
   };
   
+  /** \internal */
   template<typename T, std::size_t COUNT>
   inline std::ostream& operator<<(std::ostream& os, const std::array<T, COUNT>& arr)
   {
@@ -394,6 +404,7 @@ namespace fftx
     return os;
   }
   
+  /** \internal */
   template<int DIM>
   void MDDFT(const point_t<DIM>& extents, int batch,
              array_t<DIM, std::complex<double>>& destination,
@@ -402,6 +413,7 @@ namespace fftx
     std::cout<<"   TDAGNode(TTensorI(MDDFT("<<extents<<",-1),"<<batch<<",APar, APar), var_"<<destination.id()<<",var_"<<source.id()<<"),\n";
   }
   
+  /** \internal */
   template<int DIM>
   void IMDDFT(const point_t<DIM>& extents, int batch,
              array_t<DIM, std::complex<double>>& destination,
@@ -410,6 +422,7 @@ namespace fftx
     std::cout<<"   TDAGNode(TTensorI(MDDFT("<<extents<<",1),"<<batch<<",APar, APar), var_"<<destination.id()<<",var_"<<source.id()<<"),\n";
   }
     
+  /** \internal */
   template<int DIM>
   void MDPRDFT(const point_t<DIM>& extent, int batch,
                array_t<DIM+1, double>& destination,
@@ -418,6 +431,7 @@ namespace fftx
     std::cout<<"    TDAGNode(TTensorI(MDPRDFT("<<extent<<",-1),"<<batch<<",APar,APar), var_"<<destination.id()<<",var_"<<source.id()<<"),\n";
   }
 
+  /** \internal */
   template<int DIM>
   void IMDPRDFT(const point_t<DIM>& extent, int batch,
                array_t<DIM+1, double>& destination,
@@ -426,6 +440,7 @@ namespace fftx
     std::cout<<"    TDAGNode(TTensorI(IMDPRDFT("<<extent<<",1),"<<batch<<",APar,APar), var_"<<destination.id()<<",var_"<<source.id()<<"),\n";
   }
 
+  /** \internal */
   template<int DIM>
   void PRDFT(const point_t<DIM>& extent,
              array_t<DIM, std::complex<double>>& destination,
@@ -434,6 +449,7 @@ namespace fftx
     std::cout<<"    TDAGNode(MDPRDFT("<<extent<<",-1), var_"<<destination.id()<<",var_"<<source.id()<<"),\n"; // FIXME: was 1, not -1.
   }
 
+  /** \internal */
   template<int DIM>
   void IPRDFT(const point_t<DIM>& extent,
               array_t<DIM, double>& destination,
@@ -442,6 +458,7 @@ namespace fftx
     std::cout<<"    TDAGNode(IMDPRDFT("<<extent<<",1), var_"<<destination.id()<<",var_"<<source.id()<<"),\n"; // FIXME: was -1, not 1.
   }
 
+  /** \internal */
   template<int DIM>
   void kernel(const array_t<DIM, double>& symbol,
               array_t<DIM, std::complex<double>>& destination,
@@ -450,6 +467,7 @@ namespace fftx
     std::cout<<"    TDAGNode(Diag(diagTensor(FDataOfs(symvar,"<<symbol.m_domain.size()<<",0),fConst(TReal, 2, 1))), var_"<<destination.id()<<",var_"<<source.id()<<"),\n";
   }
 
+  /** \internal */
   template<int DIM>
   void kernel(const array_t<DIM, std::complex<double>>& symbol,
               array_t<DIM, std::complex<double>>& destination,
@@ -458,11 +476,13 @@ namespace fftx
     std::cout<<"    TDAGNode(RCDiag(FDataOfs(symvar,"<<2*symbol.m_domain.size()<<",0)), var_"<<destination.id()<<",var_"<<source.id()<<"),\n";
   }
 
+  /** \internal */
   inline void include(const char* includeFile)
   {
     std::cout<<"opts.includes:=opts.includes::["<<includeFile<<"];\n";
   }
 
+  /** \internal */
   template<int DIM, typename T>
   void zeroEmbedBox(array_t<DIM, T>& destination, const array_t<DIM, T>& source)
   {
@@ -475,6 +495,7 @@ namespace fftx
     std::cout<<"]), var_"<<destination.id()<<",var_"<<source.id()<<"),\n";
   }
 
+  /** \internal */
   template<int DIM, typename T>
   void extractBox(array_t<DIM, T>& destination, const array_t<DIM, T>& source)
   {
@@ -487,11 +508,16 @@ namespace fftx
     std::cout<<"]), var_"<<destination.id()<<",var_"<<source.id()<<"),\n";
   }
   
+  /** \internal */
   static std::string inputType = "double";
+  /** \internal */
   static int inputCount = 1;
+  /** \internal */
   static std::string outputType = "double";
+  /** \internal */
   static int outputCount = 1;
 
+  /** \internal */
   template<int DIM, typename T, std::size_t COUNT>
   void setInputs(const std::array<array_t<DIM, T>, COUNT>& a_inputs)
   {
@@ -501,6 +527,7 @@ namespace fftx
         std::cout<<"var_"<<a_inputs[i].id()<<":= nth(X,"<<i<<");\n";
       }
   }
+  /** \internal */
   template<int DIM, typename T>
   void setInputs(const array_t<DIM, T>& a_inputs)
   {
@@ -508,6 +535,7 @@ namespace fftx
     std::cout<<"var_"<<a_inputs.id()<<":= X;\n";
   }
   
+  /** \internal */
   template<int DIM, typename T, std::size_t COUNT>
   void setOutputs(const std::array<array_t<DIM, T>, COUNT>& a_outputs)
   {
@@ -517,6 +545,7 @@ namespace fftx
         std::cout<<"var_"<<a_outputs[i].id()<<":= nth(Y,"<<i<<");\n";
       }
   }
+  /** \internal */
   template<int DIM, typename T>
   void setOutputs(const array_t<DIM, T>& a_outputs)
   {
@@ -524,12 +553,14 @@ namespace fftx
     std::cout<<"var_"<<a_outputs.id()<<":= Y;\n";
   }
 
+  /** \internal */
   template<int DIM, typename T, std::size_t COUNT>
   void setSymbol(const  std::array<array_t<DIM, T>, COUNT>& a_symbol)
   {
     std::cout<<"symvar := var(\"sym\", TPtr(TPtr(TReal)));\n";
   }
   
+  /** \internal */
   template<int DIM, typename T>
   void resample(const std::array<double, DIM>& shift,
                 array_t<DIM,T>& destination,
@@ -541,6 +572,7 @@ namespace fftx
              <<"var_"<<destination.id()<<","
              <<"var_"<<source.id()<<"),\n";
   }
+  /** \internal */
   inline void openDAG()
   {
   //  std::cout<<"conf := FFTXGlobals.defaultWarpXConf();\n";
@@ -549,6 +581,7 @@ namespace fftx
     std::cout<<"transform:= TFCall(TDecl(TDAG([\n";
   }
 
+  /** \internal */
   inline void openScalarDAG()
   {
     std::cout<<"symvar := var(\"sym\", TPtr(TReal));\n";
@@ -557,6 +590,7 @@ namespace fftx
   
  
  
+  /** \internal */
   template<typename T, int DIM, unsigned long COUNT>
   void closeDAG(std::array<array_t<DIM,T>, COUNT>& localVars, const char* name)
   {
@@ -647,6 +681,7 @@ namespace fftx
      std::cout<<"prefix:=\""<<name<<"\";\n";
   }
 
+  /** \internal */
   template<typename T, int DIM, unsigned long COUNT>
   std::string varNames(const std::array<array_t<DIM,T>, COUNT>& a_vars)
   {
@@ -660,6 +695,7 @@ namespace fftx
     return rtn;
   }                                           
 
+  /** \internal */
 template<int DIM>
   void closeScalarDAG(std::string localVarNames, const char* name)
   {
@@ -786,12 +822,14 @@ template<int DIM>
 } 
  
  
+  /** \internal */
   template<typename T, int DIM, unsigned long COUNT>
   void closeScalarDAG(const std::array<array_t<DIM,T>, COUNT>& a_vars, const char* name)
   {
     closeScalarDAG<DIM>(varNames(a_vars), name);
   }
 
+  /** \internal */
 template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long COUNT2>
   void closeScalarDAG(const std::array<array_t<DIM,T>, COUNT>& a_vars,
                       const std::array<array_t<DIM,T2>, COUNT2>& a_vars2, const char* name)
@@ -889,25 +927,32 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
 
  
   // helper meta functions===============
+  /** \internal */
   template<int DIM>
   void projecti(int out[], const int in[] );
 
+  /** \internal */
   template<>
   inline void projecti<0>(int out[], const int in[]) { return; }
 
+  /** \internal */
   template<int DIM>
   inline void projecti(int out[], const int in[] )
   {
     out[DIM-1]=in[DIM-1]; projecti<DIM-1>(out, in);
   }
 
+  /** \internal */
   template<int DIM>
   std::size_t bsize(int const lo[], int const hi[]);
+  /** \internal */
   template<>
   inline std::size_t bsize<0>(int const lo[], int const hi[]){return 1;}
+  /** \internal */
   template<int DIM>
   inline std::size_t bsize(int const lo[], int const hi[]){ return (hi[DIM-1]-lo[DIM-1]+1)*bsize<DIM-1>(lo, hi);}
 
+  /** \internal */
   template<int DIM>
   inline size_t point_t<DIM>::product()
   {
@@ -919,6 +964,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return prod;
   }
     
+  /** \internal */
   template<int DIM>
   inline point_t<DIM-1> point_t<DIM>::project() const
   {
@@ -927,6 +973,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return rtn;
   }
 
+  /** \internal */
   template<int DIM>
   inline point_t<DIM-1> point_t<DIM>::projectC() const
   {
@@ -935,26 +982,32 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return rtn;
   }
   
+  /** \internal */
   template<unsigned char DIM>
   inline bool equalInts(const int* a, const int* b) { return (a[DIM-1]==b[DIM-1])&&equalInts<DIM-1>(a, b);}
+  /** \internal */
   template<>
   inline bool equalInts<0>(const int* a, const int* b) {return true;}
   
+  /** \internal */
   template<int DIM>
   inline std::size_t box_t<DIM>::size() const { return bsize<DIM>(lo.x,hi.x);}
 
+  /** \internal */
   template<int DIM>
   inline bool point_t<DIM>::operator==(const point_t<DIM>& a_rhs) const
   {
     return equalInts<DIM>(x, a_rhs.x);
   }
   
+  /** \internal */
   template<int DIM>
   inline void point_t<DIM>::operator=(int a_value)
   {
     for(int i=0; i<DIM; i++) x[i]=a_value;
   }
 
+  /** \internal */
   template<int DIM>
   inline point_t<DIM> point_t<DIM>::operator*(int a_scale) const
   {
@@ -963,6 +1016,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return rtn;
   }
 
+  /** \internal */
   template<int DIM>
   inline point_t<DIM> point_t<DIM>::Unit()
   {
@@ -971,6 +1025,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return rtn;
   }
 
+  /** \internal */
   template<int DIM>
   inline point_t<DIM> point_t<DIM>::Zero()
   {
@@ -979,6 +1034,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return rtn;
   } 
   
+  /** \internal */
   template<int DIM, typename T, typename Func_P>
   struct forallHelper
   {
@@ -1001,6 +1057,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     }
   };
   
+  /** \internal */
   template<typename T, typename Func_P>
   struct forallHelper<1, T, Func_P>
   {
@@ -1024,6 +1081,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
  
   };
   
+  /** \internal */
   template<int DIM, typename T, typename Func>
   inline void forall(Func f, array_t<DIM, T>& array)
   {
@@ -1034,6 +1092,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     T* ptr = array.m_data.local();
     forallHelper<DIM, T,decltype(fp) >::f(ptr, p.x, lo, hi,fp);
   }
+  /** \internal */
   template<int DIM, typename T1, typename T2, typename Func>
   inline void forall(Func f, array_t<DIM, T1>& array, const array_t<DIM, T2>& array2)
   {
@@ -1046,11 +1105,14 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     forallHelper<DIM, T1,decltype(fp) >::f2(ptr, ptr2, p.x, lo, hi,fp);
   }
      
+  /** \internal */
   template<unsigned char DIM>
   inline size_t dimHelper(int* lo, int* hi) {return (hi[DIM-1]-lo[DIM-1]+1)*dimHelper<DIM-1>(lo, hi);}
+  /** \internal */
   template<>
   inline size_t dimHelper<0>(int* lo, int* hi){ return 1;}
   
+  /** \internal */
   template<int DIM>
   inline std::size_t normalization(box_t<DIM> a_transformBox)
   {
@@ -1058,6 +1120,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return a_transformBox.size();
   }
 
+  /** \internal */
   template<int DIM>
   inline std::ostream& operator<<(std::ostream& output, const point_t<DIM> p)
   {
@@ -1070,6 +1133,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
     return output;
   }
   
+  /** \internal */
   template<int DIM>
   inline std::ostream& operator<<(std::ostream& output, const box_t<DIM>& b)
   {
