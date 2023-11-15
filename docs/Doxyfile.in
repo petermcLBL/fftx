@@ -944,8 +944,12 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = "@DOXYGEN_INPUT_DIR@"/src/include
-# INPUT                  = ../src/include
+INPUT                  = "@DOXYGEN_INPUT_DIR@"/src/include/fftx3.hpp \
+                         "@DOXYGEN_INPUT_DIR@"/src/include/interface.hpp \
+                         "@DOXYGEN_INPUT_DIR@"/src/include/fftx3utilities.h
+# INPUT                  = ../src/include/fftx3.hpp \
+#                          ../src/include/interface.hpp \
+#                          ../src/include/fftx3utilities.h
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -2530,7 +2534,7 @@ DOT_FONTPATH           =
 # Possible values are: NO, YES, TEXT, GRAPH and BUILTIN.
 # The default value is: YES.
 
-CLASS_GRAPH            = YES
+CLASS_GRAPH            = TEXT
 
 # If the COLLABORATION_GRAPH tag is set to YES then doxygen will generate a
 # graph for each documented class showing the direct and indirect implementation
