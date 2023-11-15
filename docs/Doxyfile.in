@@ -506,6 +506,7 @@ NUM_PROC_THREADS       = 1
 # The default value is: NO.
 
 TIMESTAMP              = NO
+HTML_TIMESTAMP         = YES
 
 #---------------------------------------------------------------------------
 # Build related configuration options
@@ -944,9 +945,9 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = "@DOXYGEN_INPUT_DIR@"/src/include/fftx3.hpp \
-                         "@DOXYGEN_INPUT_DIR@"/src/include/interface.hpp \
-                         "@DOXYGEN_INPUT_DIR@"/src/include/fftx3utilities.h
+INPUT                  = "@DOXYGEN_INPUT_DIR@/fftx3.hpp" \
+                         "@DOXYGEN_INPUT_DIR@/interface.hpp" \
+                         "@DOXYGEN_INPUT_DIR@/fftx3utilities.h"
 # INPUT                  = ../src/include/fftx3.hpp \
 #                          ../src/include/interface.hpp \
 #                          ../src/include/fftx3utilities.h
