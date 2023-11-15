@@ -69,6 +69,7 @@ PROJECT_LOGO           =
 # left blank the current directory will be used.
 
 OUTPUT_DIRECTORY       = "@DOXYGEN_OUTPUT_DIR@"
+# OUTPUT_DIRECTORY       = .
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create up to 4096
 # sub-directories (in 2 levels) under the output directory of each output format
@@ -944,6 +945,7 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = "@DOXYGEN_INPUT_DIR@"/src/include
+# INPUT                  = ../src/include
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1066,7 +1068,7 @@ EXCLUDE_PATTERNS       = *lib.hpp *Obj.hpp
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
 # ANamespace::AClass, ANamespace::*Test
 
-EXCLUDE_SYMBOLS        =  forallHelper TypeName fftx_cuFFT Executor
+EXCLUDE_SYMBOLS        =  forallHelper TypeName fftx_cuFFT Executor fftx_helper std handle_t
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include
@@ -1259,7 +1261,7 @@ VERBATIM_HEADERS       = YES
 # classes, structs, unions or interfaces.
 # The default value is: YES.
 
-ALPHABETICAL_INDEX     = YES
+ALPHABETICAL_INDEX     = NO
 
 # The IGNORE_PREFIX tag can be used to specify a prefix (or a list of prefixes)
 # that should be ignored while generating the index headers. The IGNORE_PREFIX
