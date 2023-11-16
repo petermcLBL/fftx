@@ -144,7 +144,7 @@ namespace fftx
     /** Array containing the coordinate in each direction. */
     int x[DIM];
 
-    /** Assigns this point_t by setting the coordinates in every dimension to the argument. */
+    /** Assigns this <tt>point_t</tt> by setting the coordinates in every dimension to the argument. */
     void operator=(int a_default);
 
     /** Returns the value of the coordinate in the specified direction. */
@@ -156,28 +156,28 @@ namespace fftx
     /** Returns true if all coordinates of this point_t are the same as the corresponding coordinates in the argument point_t, and false if any of the coordinates differ. */
     bool operator==(const point_t<DIM>& a_rhs) const;
 
-    /** Modifies this point_t by multiplying all of its coordinates by the argument. */
+    /** Modifies this <tt>point_t</tt> by multiplying all of its coordinates by the argument. */
     point_t<DIM> operator*(int scale) const;
 
-    /** Returns the dimension of this point_t. */
+    /** Returns the dimension of this <tt>point_t</tt>. */
     static int dim() {return DIM;}
 
-    /** Returns the product of the components of this point_t. */
-    size_t product();
+    /** Returns the product of the components of this <tt>point_t</tt>. */
+    int product();
     
-    /** Returns a new point_t in one lower dimension, dropping the last coordinate value. */
+    /** Returns a new <tt>point_t</tt> in one lower dimension, dropping the last coordinate value. */
     point_t<DIM-1> project() const;
 
-    /** Returns a new point_t in one lower dimension, dropping the first coordinate value. */
+    /** Returns a new <tt>point_t</tt> in one lower dimension, dropping the first coordinate value. */
     point_t<DIM-1> projectC() const;
 
-    /** Returns a point_t with all components equal to one. */
+    /** Returns a <tt>point_t</tt> with all components equal to one. */
     static point_t<DIM> Unit();
 
-    /** Returns a point_t with all components equal to zero. */
+    /** Returns a <tt>point_t</tt> with all components equal to zero. */
     static point_t<DIM> Zero();
 
-    /** Returns a point_t with the same coordinates as this point_t but with their ordering reversed. */
+    /** Returns a <tt>point_t</tt> with the same coordinates as this <tt>point_t</tt> but with their ordering reversed. */
     point_t<DIM> flipped() const { point_t<DIM> rtn; for (int d=0; d<DIM; d++) { rtn[d] = x[DIM-1 - d]; } return rtn; }
   };
 
@@ -209,10 +209,10 @@ namespace fftx
     /** Returns true if the corners of this box are the same as the corners of the argument box. */
     bool operator==(const box_t<DIM>& rhs) const {return lo==rhs.lo && hi == rhs.hi;}
 
-    /** Returns a point_t object containing the length of the box in each coordinate direction. */
+    /** Returns a <tt>point_t</tt> object containing the length of the box in each coordinate direction. */
     point_t<DIM> extents() const { point_t<DIM> rtn(hi); for(int i=0; i<DIM; i++) rtn[i]-=(lo[i]-1); return rtn;}
 
-    /** Returns a box_t object in one lower dimension, dropping the first coordinate value in both box_t::lo and box_t::hi. */
+    /** Returns a <tt>box_t</tt> object in one lower dimension, dropping the first coordinate value in both <tt>box_t::lo</tt> and <tt>box_t::hi</tt>. */
     box_t<DIM-1> projectC() const
     {
       return box_t<DIM-1>(lo.projectC(),hi.projectC());
@@ -239,7 +239,7 @@ namespace fftx
       is translated into the code generator.
         
       If <tt>fftx::tracing</tt> is false, then this constructor
-      will allocate a global_ptr that is sized 
+      will allocate a <tt>global_ptr</tt> that is sized 
       to hold <tt>a_box.size()</tt> elements of data of type T.
     */
     array_t(const box_t<DIM>& a_box):m_domain(a_box)
@@ -845,7 +845,7 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
   }
 
 /** \relates fftx::box_t
-    Returns true if the given point_t is contained in the given box_t.
+    Returns true if the given <tt>point_t</tt> is contained in the given <tt>box_t</tt>.
 */
   template<int DIM>
   inline bool isInBox(point_t<DIM> a_pt, const box_t<DIM>& a_bx)
@@ -861,11 +861,12 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
   }
 
 /** \relates fftx::box_t
-    Returns the position of the given point_t within the given box_t
+    Returns the position of
+    the given <tt>point_t</tt> within the given <tt>box_t</tt>
     according to the ordering of points within it, starting from 0.
 
-    This function is the inverse of pointFromPositionBox()
-    on the same box_t.
+    This function is the inverse of <tt>pointFromPositionBox()</tt>
+    on the same <tt>box_t</tt>.
  */
   template<int DIM>
   inline size_t positionInBox(point_t<DIM> a_pt, const box_t<DIM>& a_bx)
@@ -895,11 +896,12 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
   }
 
 /** \relates fftx::box_t
-    Returns the point_t that is at the given position in the given box_t,
+    Returns the <tt>point_t</tt> that is at the given position
+    in the given <tt>box_t</tt>,
     according to the ordering of points within it, starting from 0.
 
-    This function is the inverse of positionInBox()
-    on the same box_t.
+    This function is the inverse of <tt>positionInBox()</tt>
+    on the same <tt>box_t</tt>.
  */
   template<int DIM>
   inline point_t<DIM> pointFromPositionBox(size_t a_ind, const box_t<DIM>& a_bx)
@@ -959,9 +961,9 @@ template<typename T, typename T2, int DIM, unsigned long COUNT, unsigned long CO
 
   /** \internal */
   template<int DIM>
-  inline size_t point_t<DIM>::product()
+  inline int point_t<DIM>::product()
   {
-    size_t prod = 1;
+    int prod = 1;
     for (int d = 0; d < DIM; d++)
       {
         prod *= x[d];

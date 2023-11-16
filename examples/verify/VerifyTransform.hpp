@@ -845,7 +845,7 @@ protected:
     setConstant(all1in, scalarVal<T_IN>(1.));
 
     fftx::array_t<DIM, T_OUT> magImpulse(m_outDomain);
-    size_t npts = m_tfm.size().product();
+    auto npts = m_tfm.size().product();
     T_OUT mag = scalarVal<T_OUT>(npts * 1.);
     setUnitImpulse(magImpulse, m_outDomain.lo, mag);
 
@@ -867,7 +867,7 @@ protected:
     setConstant(all1in, scalarVal<T_IN>(1.));
 
     fftx::array_t<DIM, T_OUT> magImpulse(m_outDomain);
-    size_t npts = m_tfm.size().product();
+    auto npts = m_tfm.size().product();
     T_OUT mag = scalarVal<T_OUT>(npts * 1.);
     setUnitImpulse(magImpulse, m_outDomain.lo, mag);
 
