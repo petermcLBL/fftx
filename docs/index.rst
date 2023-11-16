@@ -28,6 +28,7 @@ SpiralGen, Inc.
 
    introduction.rst
    install.rst
+   README.rst
    apis.rst
    distributed.rst
    extending.rst

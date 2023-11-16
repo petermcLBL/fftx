@@ -41,7 +41,7 @@ author = 'FFTX Team'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-extensions = [ "breathe", "sphinx.ext.graphviz" ]
+extensions = [ "breathe", "sphinx.ext.graphviz", "sphinx_readme" ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
