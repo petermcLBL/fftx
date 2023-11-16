@@ -79,9 +79,10 @@ jobs:
         make Sphinx
         find . -iname namespacefftx.xml
         ls /home/runner/work/fftx/fftx/fftx/build/docs/doxygen/xml
+        ls docs
         ls docs/doxygen/xml
         mv docs/doxygen/html docs/sphinx/html
         # mv /home/runner/work/fftx/fftx/fftx/build/docs/doxygen/html/ /home/runner/work/fftx/fftx/fftx/build/docs/sphinx/html
-        pandoc --from=markdown --to=rst --output=README.rst ../README.md
+        pandoc --from=markdown --to=rst --output=docs/README.rst ../README.md
         "../docs/buildsite.sh"
       shell: bash
