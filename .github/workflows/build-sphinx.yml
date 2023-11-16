@@ -81,8 +81,10 @@ jobs:
         ls /home/runner/work/fftx/fftx/fftx/build/docs/doxygen/xml
         ls docs
         ls docs/doxygen/xml
+        cat docs/doxygen/xml/index.xml
         mv docs/doxygen/html docs/sphinx/html
         # mv /home/runner/work/fftx/fftx/fftx/build/docs/doxygen/html/ /home/runner/work/fftx/fftx/fftx/build/docs/sphinx/html
-        pandoc --from=markdown --to=rst --output=docs/README.rst ../README.md
+        pandoc --from=markdown --to=rst --output=docs/sphinx/README.rst ../README.md
+        ls docs/sphinx
         "../docs/buildsite.sh"
       shell: bash
