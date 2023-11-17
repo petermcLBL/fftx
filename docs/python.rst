@@ -1,7 +1,7 @@
 
 
-Python API
-==========
+Python Package for FFTX
+=======================
 
 The `Python Package for FFTX <https://github.com/spiral-software/python-package-fftx>`_
 provides NumPy/CuPy-compatible access to the high performance

@@ -61,7 +61,7 @@ FFTs
  
 	| 2. F. Franchetti and M. Püschel,
 	| "**Generating High-Performance Pruned FFT Implementations**",
-	| *Proceedings of International Conference on Acoustics, Speech, and Signal Processing (ICASSP)*, 2009.
+	| *Proceedings of International Conference on Acoustics, Speech, and Signal Processing (ICASSP)*, 2009, Taipei, Taiwan.
 	| `[ PDF ] <http://users.ece.cmu.edu/~franzf/papers/icassp09.pdf>`__
 
 
@@ -73,7 +73,7 @@ FFTs
 
 	| 4. Yevgen Voronenko and Markus Püschel,
 	| "**Algebraic Signal Processing Theory: Cooley-Tukey Type Algorithms for Real DFTs**",
-	| *IEEE Transactions on Signal Processing*, **57**(1): 205--222 (2009).
+	| *IEEE Transactions on Signal Processing*, **57** (1): 205--222 (2009).
 	| `[ PDF ] <http://spiral.ece.cmu.edu:8080/pub-spiral/pubfile/jrft_131.pdf>`__
 
 	
@@ -115,14 +115,14 @@ Interesting Target Hardware
 
 	| 2. Berkin Akin, Franz Franchetti and James C. Hoe,
 	| "**Understanding the Design Space of DRAM-optimized Hardware FFT Accelerators**",
-	| *Proc. IEEE International Conference on Application-Specific Systems, Architectures and Processors (ASAP)*, 2014, Zurich, Switzerland, pp. 248-255.
+	| *Proc. IEEE International Conference on Application-Specific Systems, Architectures and Processors (ASAP)*, 2014, Zurich, Switzerland, pp. 248--255.
 	| `[ PDF ] <http://users.ece.cmu.edu/~franzf/papers/asap14.pdf>`__
 
 
 
 	| 3. P. A. Milder, F. Franchetti, J. C. Hoe and M. Püschel,
        	| "**Computer Generation of Hardware for Linear Digital Signal Processing Transforms**",
-	| *ACM Transactions on Design Automation of Electronic Systems*, **17**(2), Article 15 (2012).
+	| *ACM Transactions on Design Automation of Electronic Systems*, **17** (2), Article 15 (2012).
 	| ACM TODAES Best Paper Award 2014 .
 	| `[ PDF ] <http://users.ece.cmu.edu/~franzf/papers/12todaes_161.pdf>`__
 
@@ -224,7 +224,7 @@ Applications
 
 	| 2. A Canning, J Shalf, LW Wang, H Wasserman and M Gajbe,
 	| "**A Comparison of Different Communication Structures for Scalable Parallel Three Dimensional FFTs in First Principles Codes**",
-	| in Chapman, B., Desprez, F., Joubert, GR, et al.(eds.), *Proceed. ParCo 09*, 2009, Lyon, France, pp. 107-116.
+	| in Chapman, B., Desprez, F., Joubert, GR, et al.(eds.), *Proceed. ParCo 09*, 2009, Lyon, France, pp. 107--116.
 
 
 	| 3. M Gajbe, A Canning, LW Wang, J Shalf, H Wasserman and R Vuduc,
@@ -249,10 +249,10 @@ Applications
 
 	| 7. A Canning and D Raczkowski,
 	| "**Scaling First-Principles Plane Wave Codes to Thousands of Processors**",
-	| *Computer Physics Communications*, **169**(1--3):449--453 (2005).
+	| *Computer Physics Communications*, **169** (1--3):449--453 (2005).
 
 
 	| 8. A Canning, LW Wang, A Williamson and A Zunger,
 	| "**Parallel Empirical Pseudopotential Electronic Structure Calculations for Million Atom Systems**",
-	| *Journal of Computational Physics*, **160**(1):29--41 (2000).
+	| *Journal of Computational Physics*, **160** (1):29--41 (2000).
 
