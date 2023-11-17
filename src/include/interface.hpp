@@ -231,9 +231,9 @@ inline void printJITBackend(std::string name, std::vector<int> sizes) {
 }
 
 /** Class for an FFTX problem defined by:
-    - FFTXProblem::args, containing pointers to arrays to be used;
-    - FFTXProblem::sizes, containing problem size;
-    - FFTXProblem::name, a string that specifies the transform type.
+    - <tt>FFTXProblem::args</tt>, containing pointers to arrays to be used;
+    - <tt>FFTXProblem::sizes</tt>, containing problem size;
+    - <tt>FFTXProblem::name</tt>, a string that specifies the transform type.
    */
 class FFTXProblem {
 public:
@@ -264,38 +264,38 @@ public:
     std::string name;
 
 
-  /** Default constructor that leaves FFTXProblem in an undefined state.
+  /** Default constructor that leaves <tt>FFTXProblem</tt> in an undefined state.
    */
     FFTXProblem(){
     }
 
-  /** Constructor that sets FFTXProblem::name only, to the argument.
+  /** Constructor that sets <tt>FFTXProblem::name</tt> only, to the argument.
    */
     FFTXProblem(std::string name1) {
         name = name1;
     }
 
-  /** Constructor that sets FFTXProblem::args only, to the argument.
+  /** Constructor that sets <tt>FFTXProblem::args</tt> only, to the argument.
    */
     FFTXProblem(const std::vector<void*>& args1) {
         args = args1;
     }
 
-  /** Constructor that sets FFTXProblem::sizes only, to the argument.
+  /** Constructor that sets <tt>FFTXProblem::sizes</tt> only, to the argument.
    */
     FFTXProblem(const std::vector<int>& sizes1) {
        sizes = sizes1;
 
     }
 
-  /** Constructor that sets FFTXProblem::args and FFTXProblem::sizes only, to the arguments.
+  /** Constructor that sets <tt>FFTXProblem::args</tt> and <tt>FFTXProblem::sizes</tt> only, to the arguments.
    */
     FFTXProblem(const std::vector<void*>& args1, const std::vector<int>& sizes1) {
         args = args1;   
         sizes = sizes1;
     }
 
-  /** Constructor that sets FFTXProblem::sizes and FFTXProblem::name only, to the arguments.
+  /** Constructor that sets <tt>FFTXProblem::sizes</tt> and <tt>FFTXProblem::name</tt> only, to the arguments.
    */
     FFTXProblem(const std::vector<int> sizes1, std::string name1) {  
         sizes = sizes1;
@@ -303,7 +303,7 @@ public:
     }
 
 
-  /** Constructor that sets FFTXProblem::args, FFTXProblem::sizes, and FFTXProblem::name, to the arguments.
+  /** Constructor that sets <tt>FFTXProblem::args</tt>, <tt>FFTXProblem::sizes</tt>, and <tt>FFTXProblem::name</tt>, to the arguments.
    */
     FFTXProblem(const std::vector<void*>& args1, const std::vector<int>& sizes1, std::string name1) {
         args = args1;   
@@ -311,13 +311,13 @@ public:
         name = name1;
     }
 
-  /** Sets FFTXProblem::sizes. */
+  /** Sets <tt>FFTXProblem::sizes</tt>. */
     void setSizes(const std::vector<int>& sizes1);
 
-  /** Sets FFTXProblem::args. */
+  /** Sets <tt>FFTXProblem::args</tt>. */
     void setArgs(const std::vector<void*>& args1);
 
-  /** Sets FFTXProblem::name. */
+  /** Sets <tt>FFTXProblem::name</tt>. */
     void setName(std::string name);
 
   /** Performs the transform. */
