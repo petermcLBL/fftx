@@ -245,7 +245,7 @@ public:
   */
     std::vector<void*> args;
 
-  /** Size of transform, as a std::vector<int> of length equal to the dimension, with the component in each coordinate direction representing the transform size in that direction.
+  /** Size of transform, as a <tt>std::vector<int></tt> of length equal to the dimension, with the component in each coordinate direction representing the transform size in that direction.
    */
     std::vector<int> sizes;
     std::string res;

@@ -81,7 +81,7 @@ namespace fftx
      our transforms.
 
      The destructor does not delete the pointer.  It is not reference-counting.
-     It is not made to be unique.  A global_ptr can be copied, moved, etc.,
+     It is not made to be unique.  A <tt>global_ptr</tt> can be copied, moved, etc.,
      like a basic C struct.
   */
   template <typename T>
@@ -109,7 +109,7 @@ namespace fftx
         can be dereferenced. */
     bool is_local() const;
 
-    /** Returns the compute domain that would answer "true" to "<tt>isLocal()</tt>".
+    /** Returns the compute domain that would answer "true" to <tt>isLocal()</tt>.
         Currently this just tests if the MPI rank matches my_rank. */
     intrank_t where() const {return _domain;}
 
@@ -153,7 +153,7 @@ namespace fftx
     /** Returns a reference to the coordinate in the specified direction. */
     int& operator[](unsigned char a_id) {return x[a_id];}
 
-    /** Returns true if all coordinates of this point_t are the same as the corresponding coordinates in the argument point_t, and false if any of the coordinates differ. */
+    /** Returns true if all coordinates of this <tt>point_t</tt> are the same as the corresponding coordinates in the argument <tt>point_t</tt>, and false if any of the coordinates differ. */
     bool operator==(const point_t<DIM>& a_rhs) const;
 
     /** Modifies this <tt>point_t</tt> by multiplying all of its coordinates by the argument. */
@@ -227,7 +227,7 @@ namespace fftx
  
     array_t() = default;
 
-    /** Strong constructor from an aliased global_ptr object.
+    /** Strong constructor from an aliased <tt>global_ptr</tt> object.
         This constructor is an error when <tt>fftx::tracing</tt> is true. */
     array_t(global_ptr<T>&& p, const box_t<DIM>& a_box)
       :m_data(p), m_domain(a_box) {;}

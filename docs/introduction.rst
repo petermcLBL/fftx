@@ -65,11 +65,6 @@ Coupled to the platform-aware code generator is a sophisticated front
 end that interprets the details of the algorithms from the FFTX API,
 which it treats as a DSL for algorithm specification.
 
-A key feature of the FFTX API is the concept of nested plans, or
-"plans of plans".  The individual steps of the algorithm are described
-by FFTW-like plans, then collected together as part of a compound plan
-that presents the entire algorithm as a single kernel.
-
 As part of the build process, the application is compiled and run in
 *observe* mode, when FFTX follows the execution path through calls
 into the FFTX API while implementing the calls with simple unoptimized
@@ -78,16 +73,6 @@ collected, they are passed on to SPIRAL, which generates the
 high-performance kernels for linking into the production version of
 the code.  These two steps can be seamless parts of build requiring no
 extra interaction.
-
-For maximum effectiveness in producing high-performance kernels, FFTX
-provides a finer-grained API based on `FFTW's Guru Interface
-<http://www.fftw.org/fftw3_doc/Guru-Interface.html>`_.  FFTX adds a
-powerful construct, the "plan of plans", along with enhancements to
-the ``fftw_iodim``, which allows an arbitrarily complex algorithm to
-be expressed as a single entity.  Application programmers can detail
-data layout, link together sequential operations, and specify various
-aspects of parallelism through one API.
-
 
 License
 -------
