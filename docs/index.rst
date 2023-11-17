@@ -30,7 +30,9 @@ SpiralGen, Inc.
    install.rst
    README.rst
    apis.rst
+   python.rst
    distributed.rst
+   external.rst
    extending.rst
    faq.rst
    gethelp.rst

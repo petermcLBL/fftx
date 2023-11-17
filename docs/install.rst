@@ -1,7 +1,7 @@
 
 
-Installation
-============
+Installation of C++ interface
+=============================
 
 FFTX is `available on GitHub <https://github.com/spiral-software/fftx/>`__
 as open source under a non-viral
