@@ -17,7 +17,7 @@ which is defined by its domain as an instance of
 which in turn is defined by its corners, which are instances of
 :ref:`struct point_t <fftx_point_t>`.
 An array instance also contains a pointer to the data, an instance of
-:ref:`class global_ptr <global_ptr>`.
+:ref:`class global_ptr <fftx_global_ptr>`.
 
 The class :ref:`FFTXProblem <FFTXProblem>` defines an FFTX problem
 of a particular transform type of a particular size.
