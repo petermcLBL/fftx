@@ -32,6 +32,7 @@ SpiralGen, Inc.
    python.rst
    distributed.rst
    external.rst
+   collaborations.rst
    extending.rst
    faq.rst
    gethelp.rst
