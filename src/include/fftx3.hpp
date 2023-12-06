@@ -304,7 +304,7 @@ namespace fftx
       with <tt>v</tt> as array element at index <tt>location</tt>
       to be either assigned or have operations or
       functions called on it,
-      and <em>varlist</em> (which may be empty)
+      and <tt>varlist</tt> (which may be empty)
       is a comma-separated list of previously declared
       variables that are used within the block.
   */
@@ -335,7 +335,7 @@ namespace fftx
       at index <tt>location</tt>
       having operations or functions called on them
       and possibly assigning <tt>v</tt>,
-      and <em>varlist</em> (which may be empty)
+      and <tt>varlist</tt> (which may be empty)
       is a comma-separated list of previously declared
       variables that are used within the block.
   */
