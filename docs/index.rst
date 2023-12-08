@@ -1,5 +1,5 @@
 .. FFTX Project documentation master file, created by
-   sphinx-quickstart on Tue Mar  9 13:40:42 2021.
+   sphinx-quickstart; updated Dec 6 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -27,6 +27,7 @@ SpiralGen, Inc.
    :caption: Contents:
 
    introduction.rst
+   install.rst
    README.rst
    apis.rst
    python.rst
