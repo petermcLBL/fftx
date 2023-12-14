@@ -132,43 +132,6 @@ An example of how to use this PW FFT is given in the repo directory
 `examples/3DDFT_mpi <https://github.com/spiral-software/fftx/tree/main/examples/3DDFT_mpi>`__
 which also contains a README file
 explaining the general usage of the distributed 3D FFTX routines.
-Once FFTX has been built and installed in ``$FFTX_HOME``,
-the test example for the 1D
-pencil distribution (contiguous planes per MPI process) can be run on
-Frontier at ORNL with the command:
-
-
-  ::
-  
-    cd $FFTX_HOME/bin
-    srun -N <nodes>. -n <ranks> ./test3DDFT_mpi_1D.x \
-    <M>,<N>,<K>,<batch>,<embedded>,<forward>,<complex>,<check>
-
-The parameters here are:
-
-  - ``M``, ``N``, ``K`` describe the input size dimensions of the 3D DFT for X, Y, and Z, respectively.
-  - ``batch`` describes the number of 3D DFTs that are computed at a time. 
-  - ``embedded`` is ``1`` if the input tensor is embedded in the center of a tensor twice the size in each dimension, that is, ``[2M, 2N, 2K]``, and ``0`` otherwise.
-  - ``forward`` is ``1`` for a forward transform and ``0`` for an inverse transform.
-  - ``complex`` is ``1`` for a complex-to-complex transform (C2C), or ``0`` if the input or output is real (e.g. R2C or C2R). 
-  - ``check`` is ``1`` to check the distributed computation with an equivalent 3D transform using vendor libraries, and ``0`` otherwise.
-
-For example, to perform the PW distributed FFT on 8 MPI processes
-(equivalent to, say, 8 GPUs on one node on Frontier)
-on a sphere of diameter 128
-contained in a box of dimensions 128\ :sup:`3` as input
-with the output in realspace being the double sized 256\ :sup:`3` grid,
-forward C2C transform, and no check against vendor transform,
-the command would be:
-
-  ::
-    
-    srun  -n 8 ./test3DDFT_mpi_1D.x 128,128,128,1,1,1,1,0
-
-Commands for R2C, etc., would be similar.
-The data layout here would be that each of the 8 MPI processes holds 32
-contiguous planes of the full-size 256\ :sup:`3` grid and 16 planes of the
-embedded 128\ :sup:`3` grid containing the sphere.
 
 As a proof of principle, we have implemented the embedded PW FFTX
 routine in the PW branch of NWChem and obtained the same results, to
