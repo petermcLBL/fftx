@@ -139,16 +139,18 @@ Frontier at ORNL with the command:
 
   ::
   
-    cd /fftx/bin
-    srun -N <nodes>. -n <ranks> ./test3DDFT_mpi_1D.x <M>,<N>,<K>,<batch>,<embedded>,<forward>,<complex>,<check>
+    cd $FFTX_HOME/bin
+    srun -N <nodes>. -n <ranks> ./test3DDFT_mpi_1D.x \
+    <M>,<N>,<K>,<batch>,<embedded>,<forward>,<complex>,<check>
 
 The parameters here are:
-- ``M``, ``N``, ``K`` describe the input size of the dimensions of the 3D DFT for X, Y, and Z, respectively.
-- ``batch`` describes the number of 3D DFTs that are computed at a time. 
-- ``embedded`` determines whether the input tensor is embedded in the center of a tensor twice the size in each dimension ``[2M, 2N, 2K]``.
-- ``forward`` is ``1`` for a forward transform and ``0`` for an inverse transform.
-- ``complex`` is ``1`` for a complex-to-complex transform (C2C), or ``0`` if the input or output is real (e.g. R2C or C2R). 
-- ``check`` is ``1`` to check the distributed computation with an equivalent 3D transform using vendor libraries.
+
+  - ``M``, ``N``, ``K`` describe the input size of the dimensions of the 3D DFT for X, Y, and Z, respectively.
+  - ``batch`` describes the number of 3D DFTs that are computed at a time. 
+  - ``embedded`` determines whether the input tensor is embedded in the center of a tensor twice the size in each dimension ``[2M, 2N, 2K]``.
+  - ``forward`` is ``1`` for a forward transform and ``0`` for an inverse transform.
+  - ``complex`` is ``1`` for a complex-to-complex transform (C2C), or ``0`` if the input or output is real (e.g. R2C or C2R). 
+  - ``check`` is ``1`` to check the distributed computation with an equivalent 3D transform using vendor libraries.
 
 For example, to perform the PW distributed FFT on a sphere of diameter
 128 contained in a box of dimensions 128\ :sup:`3` as input with the output
