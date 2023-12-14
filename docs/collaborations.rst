@@ -129,10 +129,10 @@ as input, the half size grid in Fourier space that contains the sphere
 padded with zeros, as shown in the figure above.
 The output is then the full double sized grid in real space.
 An example of how to use this PW FFT is given in the repo directory
-`examples/3DDFT_mpi <https://github.com/spiral-software/fftx/examples/3DDFT_mpi>`__
+`examples/3DDFT_mpi <https://github.com/spiral-software/fftx/tree/main/examples/3DDFT_mpi>`__
 which also contains a README file
 explaining the general usage of the distributed 3D FFTX routines.
-Once FFTX has been built and installed in `$FFTX_HOME`,
+Once FFTX has been built and installed in ``$FFTX_HOME``,
 the test example for the 1D
 pencil distribution (contiguous planes per MPI process) can be run on
 Frontier at ORNL with the command:
@@ -146,12 +146,12 @@ Frontier at ORNL with the command:
 
 The parameters here are:
 
-  - ``M``, ``N``, ``K`` describe the input size of the dimensions of the 3D DFT for X, Y, and Z, respectively.
+  - ``M``, ``N``, ``K`` describe the input size dimensions of the 3D DFT for X, Y, and Z, respectively.
   - ``batch`` describes the number of 3D DFTs that are computed at a time. 
-  - ``embedded`` determines whether the input tensor is embedded in the center of a tensor twice the size in each dimension ``[2M, 2N, 2K]``.
+  - ``embedded`` is ``1`` if the input tensor is embedded in the center of a tensor twice the size in each dimension, that is, ``[2M, 2N, 2K]``, and ``0`` otherwise.
   - ``forward`` is ``1`` for a forward transform and ``0`` for an inverse transform.
   - ``complex`` is ``1`` for a complex-to-complex transform (C2C), or ``0`` if the input or output is real (e.g. R2C or C2R). 
-  - ``check`` is ``1`` to check the distributed computation with an equivalent 3D transform using vendor libraries.
+  - ``check`` is ``1`` to check the distributed computation with an equivalent 3D transform using vendor libraries, and ``0`` otherwise.
 
 For example, to perform the PW distributed FFT on 8 MPI processes
 (equivalent to, say, 8 GPUs on one node on Frontier)
@@ -166,7 +166,7 @@ the command would be:
     srun  -n 8 ./test3DDFT_mpi_1D.x 128,128,128,1,1,1,1,0
 
 Commands for R2C, etc., would be similar.
-The data layout here would be that each MPI process holds 32
+The data layout here would be that each of the 8 MPI processes holds 32
 contiguous planes of the full-size 256\ :sup:`3` grid and 16 planes of the
 embedded 128\ :sup:`3` grid containing the sphere.
 
