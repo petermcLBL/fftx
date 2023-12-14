@@ -7,7 +7,7 @@ to use FFTX for algorithm kernels.
 Spinifel single-particle imaging
 --------------------------------
 
-`Spinifel <https://gitlab.osti.gov/mtip/spinifel>`_
+`Spinifel <https://gitlab.osti.gov/mtip/spinifel>`__
 is an application that recovers the density distribution of
 molecules from X-ray diffraction images.
 It is being developed at Lawrence Berkeley National Laboratory, SLAC
@@ -129,10 +129,11 @@ as input, the half size grid in Fourier space that contains the sphere
 padded with zeros, as shown in the figure above.
 The output is then the full double sized grid in real space.
 An example of how to use this PW FFT is given in the repo directory
-`examples/3DDFT_mpi<https://github.com/spiral-software/fftx/examples/3DDFT_mpi>`__
-which also contains a README.md file
+`examples/3DDFT_mpi <https://github.com/spiral-software/fftx/examples/3DDFT_mpi>`__
+which also contains a README file
 explaining the general usage of the distributed 3D FFTX routines.
-Once FFTX has been built and installed, the test example for the 1D
+Once FFTX has been built and installed in `$FFTX_HOME`,
+the test example for the 1D
 pencil distribution (contiguous planes per MPI process) can be run on
 Frontier at ORNL with the command:
 
@@ -152,11 +153,13 @@ The parameters here are:
   - ``complex`` is ``1`` for a complex-to-complex transform (C2C), or ``0`` if the input or output is real (e.g. R2C or C2R). 
   - ``check`` is ``1`` to check the distributed computation with an equivalent 3D transform using vendor libraries.
 
-For example, to perform the PW distributed FFT on a sphere of diameter
-128 contained in a box of dimensions 128\ :sup:`3` as input with the output
-in realspace being the double sized 256\ :sup:`3` grid, on 8 MPI processes
-(equivalent to, say, 8 GPUs on one node on Frontier) the command would
-be for C2C:
+For example, to perform the PW distributed FFT on 8 MPI processes
+(equivalent to, say, 8 GPUs on one node on Frontier)
+on a sphere of diameter 128
+contained in a box of dimensions 128\ :sup:`3` as input
+with the output in realspace being the double sized 256\ :sup:`3` grid,
+forward C2C transform, and no check against vendor transform,
+the command would be:
 
   ::
     
