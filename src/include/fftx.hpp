@@ -62,25 +62,13 @@
 #define FFTX_XSTR(s) FFTX_STR(s)
 #define FFTX_STR(s) #s
 
-#define FFTX_VERSION 1.3.0
+#define FFTX_VERSION 1.3.1
 
 // Set this to 1 for row-major order, 0 for column-major order.
 #define FFTX_ROW_MAJOR_ORDER 1
 
 // Set this to 1 if truncating complex array in last dimension, 0 if in first.
 #define FFTX_COMPLEX_TRUNC_LAST 1
-
-#ifdef __FFTX_DOXYGEN__
-/*! \struct bogus_struct
-  This is a kludge.
-  In order for doxygen 1.9.8 to find structs within namespace fftx,
-  we need to define a struct outside namespace fftx,
-  without the obligatory semicolon after it.
-  This needs to be in an #ifdef __FFTX_DOXYGEN__ block because
-  it will not compile as C++ due to the missing semicolon.
-*/
-struct bogus_struct { }
-#endif
 
 namespace fftx
 {
