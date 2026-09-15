@@ -96,7 +96,6 @@ class Executor {
         size_t cubinSize;
         void *cubin;
         float GPUtime;
-        int smVersion;  // e.g. 121
     public:
         // Executor();
     //     Executor(std::vector<fftx::array_t<3,std::complex<double>>> &in1,
@@ -105,7 +104,6 @@ class Executor {
         // Executor(const std::vector<void*>& args1) {
         //     kernelargs = args1;
         // }
-        void detectSMVersion();
         string_code hashit(std::string const& inString);
         void parseDataStructure(std::string input);
         void createProg();
@@ -120,20 +118,6 @@ class Executor {
         float getKernelTime();
         // void returnData(std::vector<fftx::array_t<3,std::complex<double>>> &out1);
 };
-
-inline void Executor::detectSMVersion() {
-    FFTX_DEVICE_SAFE_CALL(cuInit(0));
-    CUdevice cuDevice;
-    int major = 0, minor = 0;
-    FFTX_DEVICE_SAFE_CALL(cuDeviceGet(&cuDevice, 0));
-    FFTX_DEVICE_SAFE_CALL(cuDeviceGetAttribute(&major, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, cuDevice));
-    FFTX_DEVICE_SAFE_CALL(cuDeviceGetAttribute(&minor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, cuDevice));
-    smVersion = major * 10 + minor;  // e.g. 121
-    if ( FFTX_DEBUGOUT ) fftx::OutStream() << "Detected SM version: " << smVersion << std::endl;
-    // fftx::OutStream() << "Detected GPU: SM " << major << "." << minor
-    // << " (smVersion=" << smVersion << ")" << std::endl;
-}
-
 
 inline Executor::string_code Executor::hashit(std::string const& inString) {
     if(inString == "int") return zero;
@@ -277,11 +261,19 @@ inline void Executor::getVars() {
 }
 
 inline void Executor::compileProg() {
-    std::string archFlag = "--gpu-architecture=compute_" + std::to_string(smVersion);
-    const char *opts[] = {"--relocatable-device-code=true", archFlag.c_str()};
-    int numOpts = sizeof(opts) / sizeof(opts[0]);
-    compileResult = nvrtcCompileProgram(prog, numOpts, opts);
-    if ( FFTX_DEBUGOUT ) fftx::OutStream() << "compiled program\n";
+    FFTX_DEVICE_SAFE_CALL(cuInit(0));
+    FFTX_DEVICE_SAFE_CALL(cuDeviceGet(&cuDevice, 0));
+
+    int major = 0, minor = 0;
+    FFTX_DEVICE_SAFE_CALL(cuDeviceGetAttribute(&major, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, cuDevice));
+    FFTX_DEVICE_SAFE_CALL(cuDeviceGetAttribute(&minor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, cuDevice));
+
+    char archOpt[64];
+    snprintf(archOpt, sizeof(archOpt), "--gpu-architecture=compute_%d%d", major, minor);
+    const char *opts[] = {"--relocatable-device-code=true", archOpt};
+    compileResult = nvrtcCompileProgram(prog, 2, opts);
+
+    if ( FFTX_DEBUGOUT ) fftx::OutStream() << "compiled program with " << archOpt << "\n";
 }
 
 inline void Executor::getLogsAndPTX() {
@@ -421,7 +413,6 @@ inline void Executor::execute(std::string file_name) {
     // fftx::OutStream() << (char*)inputargs.at(inputargs.size()-1) << std::endl;
     // fftx::OutStream() << (inputargs.at(inputargs.size()-2))[counts-1] << std::endl;
     //fftx::OutStream() << in.at(0).m_domain.size() << std::endl;
-    detectSMVersion();
     if ( FFTX_DEBUGOUT ) fftx::OutStream() << "begin parsing\n";
     parseDataStructure(file_name);
     if ( FFTX_DEBUGOUT ) {
